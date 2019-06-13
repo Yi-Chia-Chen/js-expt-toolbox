@@ -160,6 +160,8 @@ class trialObject {
             titles: '',
             stimPath: 'Stimuli/',
             dataFile: '',
+            savingScript: 'mySave.php',
+            savingDir: 'testing',
             trialList: [],
             pracList: [],
             intertrialInterval: 0.5,
@@ -169,7 +171,7 @@ class trialObject {
         }, options);
         this.no = this.subj.no;
         this.date = this.subj.date;
-        this.startTime = this.subj.startTime;
+        this.subjStartTime = this.subj.startTime;
         this.trialNo = -this.pracTrialN;
         this.allData = my_list_to_formatted_string(this.titles);
     }
@@ -223,7 +225,7 @@ class trialObject {
             };
             $.ajax({
                 type: "POST",
-                url: 'http://scorsese.wjh.harvard.edu/turk/tools/save.php',
+                url: this.savingScript,
                 data: postData,
             });
             this.endExptFunc();

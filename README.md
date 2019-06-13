@@ -17,3 +17,4 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 - Add rest (to let them know how much they've completed) and progress bar
 - Show alert with a customized floating div in the center that dim everything else
 - Write unit tests
+- Add formal or not
