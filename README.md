@@ -3,6 +3,7 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 
 ## Version History
 - 1.0.0 (2019.06.13): First version
+- 1.0.1 (2019.06.13): Fixed some bugs
     - Used in New Texform Recognition Free Response Pretest
 
 ## Planned Improvements
