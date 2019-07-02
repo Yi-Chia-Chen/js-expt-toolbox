@@ -245,3 +245,14 @@ function my_list_from_attribute_names(obj, string_list) {
     }
     return list;
 }
+
+function CHECK_IF_RESPONDED(open_ended_list, choice_list) {
+    var all_responded = true;
+    for (var i in open_ended_list) {
+        all_responded = all_responded && (open_ended_list[i].replace(/(?:\r\n|\r|\n)/g, '') == '');
+    }
+    for (var i in choice_list) {
+        all_responded = all_responded && (typeof choice_list[i] !== 'undefined');
+    }
+    return all_responded;
+}
