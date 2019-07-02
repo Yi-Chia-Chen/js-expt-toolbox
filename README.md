@@ -2,6 +2,8 @@
 This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 
 ## Version History
+- 1.0.2 (2019.07.02): Fixed some bugs
+    - Used in New Texform Recognition Response Evaluation
 - 1.0.2b (2019.07.01): Added CHECK_IF_RESPONDED function
 - 1.0.1 (2019.06.13): Fixed some bugs
     - Used in New Texform Recognition Free Response Pretest
