@@ -23,6 +23,7 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 - Add rest (to let them know how much they've completed)
 
 ### Cleaning up
+- Use short circuit (e.g., divider = divider || '\t')
 - Make all functions do one thing only
 - Write unit tests
 - Split trial.end() into trial.end() and trial.run() by adding trial.complete attribute
