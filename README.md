@@ -2,6 +2,8 @@
 This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 
 ## Version History
+- 1.1.0 (2020.01.20): Renamed the files and fixed formatting style
+    - Used in Future Bias Ball on Hill
 - 1.0.2 (2019.07.02): Fixed some bugs
     - Used in New Texform Recognition Response Evaluation
     - Used in Deza New Texform Recognition Response Evaluation

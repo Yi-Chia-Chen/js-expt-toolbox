@@ -1,6 +1,6 @@
 // Yi-Chia Chen
 
-function my_get_param(var_name, default_value) {
+function GET_PARAMETERS(var_name, default_value) {
     const REGEX_STRING = "[\?&]" + var_name + "=([^&#]*)";
     const REGEX = new RegExp(REGEX_STRING);
     const URL = location.href;
@@ -12,7 +12,7 @@ function my_get_param(var_name, default_value) {
     }
 }
 
-function my_list_to_formatted_string(data_list, divider) {
+function LIST_TO_FORMATTED_STRING(data_list, divider) {
     divider = (divider === undefined) ? '\t' : divider;
     var string = '';
     for (var i = 0; i < data_list.length - 1; i++) {
@@ -22,10 +22,10 @@ function my_list_to_formatted_string(data_list, divider) {
     return string;
 }
 
-function my_factorial_cond(factor_list) {
+function FACTORIAL_COND(factor_list) {
 
-    function recursive_combine(now_factor, remain_factor_list) {
-        all_conditions = my_repeat_elements_in_array(all_conditions, now_factor.length);
+    function RECURSIVE_COMBINE(now_factor, remain_factor_list) {
+        all_conditions = REPEAT_ELEMENTS_IN_ARRAY(all_conditions, now_factor.length);
         for (var i = 0; i < all_conditions.length; i += now_factor.length) {
             for (var j = 0; j < now_factor.length; j++) {
                 index = i + j;
@@ -35,7 +35,7 @@ function my_factorial_cond(factor_list) {
 
         if (remain_factor_list.length !== 0) {
             now_factor = remain_factor_list.shift();
-            recursive_combine(now_factor, remain_factor_list);
+            RECURSIVE_COMBINE(now_factor, remain_factor_list);
         }
     }
 
@@ -46,12 +46,12 @@ function my_factorial_cond(factor_list) {
     }
 
     now_factor = factor_list.shift();
-    recursive_combine(now_factor, factor_list);
+    RECURSIVE_COMBINE(now_factor, factor_list);
 
     return all_conditions;
 }
 
-function my_post_data(page, data, success_func, error_callback) {
+function POST_DATA(page, data, success_func, error_callback) {
     data = (data === undefined) ? null : data;
     success_func = (success_func === undefined) ? function() { return; } : success_func;
     error_callback = (error_callback === undefined) ? function() { return; } : error_callback;
@@ -64,7 +64,7 @@ function my_post_data(page, data, success_func, error_callback) {
     });
 }
 
-function my_shuffle_array(array) {
+function SHUFFLE_ARRAY(array) {
     var j, temp;
     for (var i = array.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
@@ -75,7 +75,7 @@ function my_shuffle_array(array) {
     return array;
 }
 
-function my_sample_wo_replacement(list, sample_n) {
+function SAMPLE_WO_REPLACEMENT(list, sample_n) {
     sample_n = (sample_n === undefined) ? 1 : sample_n;
     var sample = [];
     var local_list = list.slice(0);
@@ -89,7 +89,7 @@ function my_sample_wo_replacement(list, sample_n) {
     };
 }
 
-function my_sample_w_replacement(list, sample_n) {
+function SAMPLE_W_REPLACEMENT(list, sample_n) {
     sample_n = (sample_n === undefined) ? 1 : sample_n;
     var sample = [];
     var local_list = list.slice(0);
@@ -100,11 +100,11 @@ function my_sample_w_replacement(list, sample_n) {
     return sample;
 }
 
-function my_rand_choice(list) {
+function RAND_CHOICE(list) {
     return list[Math.floor(Math.random() * list.length)];
 }
 
-function my_range(start_num, end_num, interval) {
+function RANGE(start_num, end_num, interval) {
     start_num = (start_num === undefined) ? 0 : start_num;
     interval = (interval === undefined) ? 1 : interval;
     var list = [];
@@ -115,7 +115,7 @@ function my_range(start_num, end_num, interval) {
 }
 
 // formatting date object into date string
-function my_format_date(date_obj, time_zone, divider, padded) {
+function FORMAT_DATE(date_obj, time_zone, divider, padded) {
     date_obj = (date_obj === undefined) ? new Date() : date_obj;
     time_zone = (time_zone === undefined) ? 'UTC' : time_zone;
     divider = (divider === undefined) ? '.' : divider;
@@ -138,7 +138,7 @@ function my_format_date(date_obj, time_zone, divider, padded) {
 }
 
 // formatting date object into 24-hour format time string
-function my_format_time(date_obj, time_zone, divider, padded) {
+function FORMAT_TIME(date_obj, time_zone, divider, padded) {
     date_obj = (date_obj === undefined) ? new Date() : date_obj;
     time_zone = (time_zone === undefined) ? 'UTC' : time_zone;
     divider = (divider === undefined) ? ':' : divider;
@@ -162,7 +162,7 @@ function my_format_time(date_obj, time_zone, divider, padded) {
 }
 
 // preloading images
-function my_load_img(index, stim_path, img_list, after_func) {
+function LOAD_IMG(index, stim_path, img_list, after_func) {
     after_func = (after_func === undefined) ? function() { return; } : after_func;
     if (index >= img_list.length) {
         return;
@@ -170,7 +170,7 @@ function my_load_img(index, stim_path, img_list, after_func) {
     var image = new Image();
     if (index < img_list.length - 1) {
         image.onload = function() {
-            my_load_img(index + 1, stim_path, img_list, after_func);
+            LOAD_IMG(index + 1, stim_path, img_list, after_func);
         };
     } else {
         image.onload = after_func;
@@ -179,7 +179,7 @@ function my_load_img(index, stim_path, img_list, after_func) {
 }
 
 // preloading audio files
-function my_load_sounds(index, stim_path, sound_list, after_func) {
+function LOAD_SOUNDS(index, stim_path, sound_list, after_func) {
     if (index >= sound_list.length) {
         return;
     }
@@ -187,11 +187,11 @@ function my_load_sounds(index, stim_path, sound_list, after_func) {
 
     sound.src = stim_path + sound_list[index];
 
-    function check_state() {
+    function CHECK_STATE() {
         if (sound.readyState == 4) {
             clearInterval(check_loading);
             if (index < sound_list.length - 1) {
-                my_load_sounds(index + 1, stim_path, sound_list, after_func);
+                LOAD_SOUNDS(index + 1, stim_path, sound_list, after_func);
             } else {
                 after_func();
             }
@@ -202,14 +202,14 @@ function my_load_sounds(index, stim_path, sound_list, after_func) {
                 clearInterval(check_loading);
                 if (reload_num > 3) { // giving up
                     if (index < sound_list.length - 1) {
-                        my_load_sounds(index + 1, stim_path, sound_list, after_func);
+                        LOAD_SOUNDS(index + 1, stim_path, sound_list, after_func);
                     } else {
                         after_func();
                     }
                 } else { // try reloading again
                     reload_num++;
                     sound.load();
-                    check_loading = window.setInterval(check_state, 20); // update progress every intervalD ms
+                    check_loading = window.setInterval(CHECK_STATE, 20); // update progress every intervalD ms
                 }
             }
         }
@@ -220,15 +220,15 @@ function my_load_sounds(index, stim_path, sound_list, after_func) {
     var check_loading = window.setInterval(check_state, 20); // update progress every intervalD ms
 }
 
-function my_to_radians(degrees) {
+function TO_RADIANS(degrees) {
     return degrees * Math.PI / 180;
 }
 
-function my_polar_to_cartesian(r, theta) {
-    return [r * Math.cos(my_to_radians(theta)), r * Math.sin(my_to_radians(theta))];
+function POLAR_TO_CARTESIAN(r, theta) {
+    return [r * Math.cos(TO_RADIANS(theta)), r * Math.sin(TO_RADIANS(theta))];
 }
 
-function my_repeat_elements_in_array(arr, repeat_n) {
+function REPEAT_ELEMENTS_IN_ARRAY(arr, repeat_n) {
     var new_arr = [];
     for (var i = 0; i < arr.length; i++) {
         for (var j = 0; j < repeat_n; j++) {
@@ -238,7 +238,7 @@ function my_repeat_elements_in_array(arr, repeat_n) {
     return new_arr;
 }
 
-function my_list_from_attribute_names(obj, string_list) {
+function LIST_FROM_ATTRIBUTE_NAMES(obj, string_list) {
     var list = []
     for (var i = 0; i < string_list.length; i++) {
         list.push(obj[string_list[i]]);
@@ -255,4 +255,12 @@ function CHECK_IF_RESPONDED(open_ended_list, choice_list) {
         all_responded = all_responded && (typeof choice_list[i] !== 'undefined');
     }
     return all_responded;
+}
+
+function DISTANCE_BETWEEN_POINTS(point_a, point_b){
+    var x_a = point_a[0];
+    var y_a = point_a[1];
+    var x_b = point_b[0];
+    var y_b = point_b[1];
+    return Math.sqrt(Math.pow(x_a-x_b,2)+Math.pow(y_a-y_b,2));
 }

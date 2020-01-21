@@ -1,5 +1,5 @@
 // by Yi-Chia Chen
-// required myFunc.js by Yi-Chia Chen
+// required func.js by Yi-Chia Chen
 // required mobile-detect.js by Heinrich Goebl
 
 
@@ -33,27 +33,27 @@ class subjObject {
         if (this.no == 'pre-post') {
             this.obtainSubjNo(this.subjNoScript, this.subjNoFile);
         }
-        this.data = my_list_to_formatted_string(this.titles);
+        this.data = LIST_TO_FORMATTED_STRING(this.titles);
         if (this.mturk) {
             this.id = this.obtainWorkerID();
         } else if (this.idFunc != false) {
             this.id = this.idFunc();
         }
         this.dateObj = new Date();
-        this.date = my_format_date(this.dateObj, 'UTC', '-', true);
-        this.startTime = my_format_time(this.dateObj, 'UTC', ':', true);
+        this.date = FORMAT_DATE(this.dateObj, 'UTC', '-', true);
+        this.startTime = FORMAT_TIME(this.dateObj, 'UTC', ':', true);
         this.userAgent = window.navigator.userAgent;
     }
 
     obtainWorkerID() {
-        var workerID = my_get_param('workerId', 'getFailed');
+        var workerID = GET_PARAMETERS('workerId', 'getFailed');
         if (workerID == 'getFailed') {
-            workerID = prompt("Please enter your worker ID:", "");
+            workerID = prompt('Please enter your worker ID:', '');
         }
         var invalidID = (workerID == null);
         if (!invalidID) {
             workerID = workerID.replace(/\s+/g, '');
-            invalidID = (workerID == "");
+            invalidID = (workerID == '');
         }
         if (invalidID) {
             this.invalidIDFunc();
@@ -66,27 +66,15 @@ class subjObject {
     obtainSubjNo(subjNoScript, subjNoFile) {
         var that = this;
 
-        function subj_no_update_succeeded(number) {
+        function SUBJ_NO_UPDATE_SUCCEEDED(number) {
             that.No = number;
         }
 
-        function subj_no_update_failed() {
+        function SUBJ_NO_UPDATE_FAILED() {
             that.No = -999;
         }
 
-        my_post_data(subjNoScript, { 'fileName': subjNoFile }, subj_no_update_succeeded, subj_no_update_failed)
-
-        // $.ajax({
-        //         type: "POST",
-        //         url: subjNoScript,
-        //         data: { 'fileName': subjNoFile }
-        //     })
-        //     .done(function(data) {
-        //         that.no = eval(data);
-        //     })
-        //     .fail(function() {
-        //         that.no = -999;
-        //     });
+        POST_DATA(subjNoScript, { 'fileName': subjNoFile }, SUBJ_NO_UPDATE_SUCCEEDED, SUBJ_NO_UPDATE_FAILED)
     }
 
     get phone() { // getter runs when you ask for the property
@@ -102,9 +90,13 @@ class subjObject {
     }
 
     saveAttrition() {
-        var data = 'SubjNo.\tUTCStartDate\tUTCStartTime\tID\tUserAgent\n';
-        var dataList = [this.no, this.date, this.startTime, this.id, this.userAgent];
-        data += my_list_to_formatted_string(dataList);
+        var data = 'SubjNo.\tUTCStartDate\tUTCStartTime\tID\tUserAgent\tInView\tViewportW\tViewportH\n';
+        this.viewport = this.viewportSize;
+        this.inView = this.viewport['inView'];
+        this.viewportW = this.viewport['w'];
+        this.viewportH = this.viewport['h'];
+        var dataList = [this.no, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
+        data += LIST_TO_FORMATTED_STRING(dataList);
         var postData = {
             'id': this.attritionFile, //filename to save the data with
             'experimenter': 'ycc', // experimenter folder to save it in
@@ -112,7 +104,7 @@ class subjObject {
             'curData': data // data to save
         };
         $.ajax({
-            type: "POST",
+            type: 'POST',
             url: this.savingScript,
             data: postData,
         });
@@ -120,14 +112,10 @@ class subjObject {
 
     submitQ() {
         var endTimeObj = new Date();
-        this.endTime = my_format_time(endTimeObj, 'UTC', ':', true);
+        this.endTime = FORMAT_TIME(endTimeObj, 'UTC', ':', true);
         this.duration = (endTimeObj - this.dateObj) / 60000; // in minutes
-        this.viewport = this.viewportSize;
-        this.inView = this.viewport['inView'];
-        this.viewportW = this.viewport['w'];
-        this.viewportH = this.viewport['h'];
-        var dataList = my_list_from_attribute_names(this, this.titles);
-        this.data += my_list_to_formatted_string(dataList);
+        var dataList = LIST_FROM_ATTRIBUTE_NAMES(this, this.titles);
+        this.data += LIST_TO_FORMATTED_STRING(dataList);
         var postData = {
             'id': this.subjFile, //filename to save the data with
             'experimenter': 'ycc', // experimenter folder to save it in
@@ -135,7 +123,7 @@ class subjObject {
             'curData': this.data // data to save
         };
         $.ajax({
-            type: "POST",
+            type: 'POST',
             url: this.savingScript,
             data: postData,
         });
@@ -173,7 +161,7 @@ class trialObject {
         this.date = this.subj.date;
         this.subjStartTime = this.subj.startTime;
         this.trialNo = -this.pracTrialN;
-        this.allData = my_list_to_formatted_string(this.titles);
+        this.allData = LIST_TO_FORMATTED_STRING(this.titles);
     }
 
     run() {
@@ -198,12 +186,12 @@ class trialObject {
         this.updateFunc(formal, last, this.thisTrial, nextTrial, this.stimPath);
 
         var that = this;
-        var startStim = function() {
+        const START_STIM = function() {
             that.trialFunc();
             that.startTime = Date.now();
         };
 
-        setTimeout(startStim, this.intertrialInterval * 1000);
+        setTimeout(START_STIM, this.intertrialInterval * 1000);
     }
 
     end(resp) {
@@ -211,8 +199,8 @@ class trialObject {
         this.rt = (currentTime - this.startTime) / 1000; // in second
         this.resp = resp;
         if (this.trialNo > 0) {
-            var dataList = my_list_from_attribute_names(this, this.titles);
-            this.allData += my_list_to_formatted_string(dataList);
+            var dataList = LIST_FROM_ATTRIBUTE_NAMES(this, this.titles);
+            this.allData += LIST_TO_FORMATTED_STRING(dataList);
         }
         if (this.trialNo < this.trialN) {
             this.run();
@@ -224,7 +212,7 @@ class trialObject {
                 'curData': this.allData // data to save
             };
             $.ajax({
-                type: "POST",
+                type: 'POST',
                 url: this.savingScript,
                 data: postData,
             });
@@ -253,10 +241,10 @@ class instrObject {
         this.instrKeys = Object.keys(this.funcDict).map(Number);
     }
 
-    next() {
+    next(textElement = $('#instrText')) {
         this.index += 1;
         if (this.index < this.text.length) {
-            $('#instrText').html(this.text[this.index]);
+            textElement.html(this.text[this.index]);
             if (this.instrKeys.includes(this.index)) {
                 this.funcDict[this.index]();
             }
