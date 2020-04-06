@@ -1,0 +1,187 @@
+<!-- HTML 5, CSS3, JavaScript, JQuery 3.3.1, mobile-detect 1.4.3 -->
+<!-- Yi-Chia Chen -->
+
+<!DOCTYPE html>
+<html lang='en' translate='no'>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Yale University Experiment</title>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Quicksand' />
+    <link rel='stylesheet' href='style.css' />
+</head>
+
+<body>
+    <noscript>It seems that JavaScript is disabled in your browser. Please go to settings and enable JavaScript for this experiment.</noscript>
+
+    <!--======== INSTRUCTIONS ========-->
+    <div class='pageBox' id='instrBox'>
+        <p id='instrText'></p>
+        <div class='button' id='nextButton' onclick='instr.next()'>NEXT</div>
+        <!--======== INFORMED CONSENT FORM ========-->
+        <div class='pageBox' id='consentBox'>
+            In order for us to conduct this experiment online, we need to include the standard consent form below.<br /><br />
+            <div id='consentTextBox'>
+                <center><b>Consent for Participation in a Research Study</b></center>
+                <center>Yale University  (Version: 5/29/19)</center><br />
+                <b>Study Title:</b> Perceiving Objects and Events<br /><br />
+                <b>Research Study Summary, Risks, and Benefits:</b> Thank you for volunteering to participate in this research study.  The purpose of this study is to better understand how we see and how we think.  Study activities will include examining simple displays and then responding by answering questions, pressing some keys, or using a computer mouse.  Because these are activities that many people already experience hundreds or thousands of times every day, there are no risks involved in this study.  The study may have no benefits to you, but it may help the scientific community come to better understand how the human mind works.  Taking part in this study is your choice.  You can choose to take part, or you can choose not to take part in this study.  You can also change your mind at any time, with no penalty.<br /><br />
+                <b>Duration:</b> If you agree to take part, the study will last approximately 20 minutes.<br /><br />
+                <b>Costs and Compensation:</b> There are no costs associated with participation in this study.  You will receive $2.2 for participating.<br /><br />
+                <b>Confidentiality:</b> No personally identifying information will be collected, so your participation will be anonymous.  Your data will be pooled with those from other participants, and may be included in scientific publications and uploaded to public data repositories.<br /><br />
+                <b>Learning More:</b> If you have questions about this study, you may contact your experimenter Clara Colombatto at clara.colombatto@yale.edu.  If you have questions about your rights as a research participant, or you have complaints about this research, you can contact the Yale Institutional Review Boards at 203-785-4688 or hrpp@yale.edu.  <br /><br />
+                <b>Informed Consent:</b> Your participation indicates that you have read and understood this consent form and the information presented and that you agree to be in this study.<br /><br />
+            </div>
+        </div>
+    </div>
+
+    <!--======== IMAGE AESTHETICS INSTRUCTIONS QUESTION ========-->
+    <div class='pageBox' id='instrQPhoto'>
+        <div class='qMain'>Based on the instructions you've just received, what is your job in this part of experiment?</div>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQPhoto' value='forgot' /><div class='optionText'>Select this option if you do not remember the instructions.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQPhoto' value='emotion' /><div class='optionText'>To rate how happy you feel looking at each image.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQPhoto' value='subject' /><div class='optionText'>To rate how much you like the subject of the images.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQPhoto' value='meaning' /><div class='optionText'>To rate how much you like the meaning of the images.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQPhoto' value='you' /><div class='optionText'>To rate how visually appealing each image looks to you.</div></div></label>
+        <div class='button' onclick='SUBMIT_INSTR_Q()'>SUBMIT</div>
+    </div>
+
+    <!--======== FACE ATTRACTIVENESS INSTRUCTIONS QUESTION ========-->
+    <div class='pageBox' id='instrQFace'>
+        <div class='qMain'>Based on the instructions you've just received, what is your job in this part of experiment?</div>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQFace' value='forgot' /><div class='optionText'>Select this option if you do not remember the instructions.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQFace' value='emotion' /><div class='optionText'>To rate how happy you feel looking at each person.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQFace' value='expression'/><div class='optionText'>To rate how happy each person looks.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQFace' value='you' /><div class='optionText'>To rate how visually attractive each person looks.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQFace' value='personality' /><div class='optionText'>To rate how nice each person looks.</div></div></label>
+        <div class='button' onclick='SUBMIT_INSTR_Q()'>SUBMIT</div>
+    </div>
+
+    <!--======== EXPERIMENT ========-->
+    <div class='pageBox' id='trialBox'>
+        <div id='progress'>0% completed</div>
+        <img id='testImg' src='Stimuli/blank.jpg' alt='' draggable='false'/>
+        <div id='bufferDiv' alt=''>
+            <img id='bufferImg' src='Stimuli/blank.jpg' alt='' />
+        </div>
+        <div id='ratingContainer' class='ratingContainer'>
+            <div class='ratingButton' id='r6'>6</div>
+            <div class='rLabels' id='r6label'></div>
+            <div class='ratingButton' id='r5'>5</div>
+            <div class='ratingButton' id='r4'>4</div>
+            <div class='ratingButton' id='r3'>3</div>
+            <div class='ratingButton' id='r2'>2</div>
+            <div class='ratingButton' id='r1'>1</div>
+            <div class='rLabels' id='r1label'></div>
+        </div>
+    </div>
+
+    <!--======== DEBRIEFING QUESTION ========-->
+    <div class='pageBox' id='questionsBox'>
+        You're almost done! Please answer these last questions:<br /><br /><br />
+
+        <div class='qMain'>How often do you spontaneously notice how visually appealing (or unappealing) things are in your day-to-day life?</div>
+        <div class='likertWrap'>
+            <div class='likertLine'></div>
+            <div class='likert'><label><center><input type='radio' name='dailyPhoto' value='1' required /></center><center>1</center><center>very seldom</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyPhoto' value='2' required /></center><center>2</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyPhoto' value='3' required /></center><center>3</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyPhoto' value='4' required /></center><center>4</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyPhoto' value='5' required /></center><center>5</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyPhoto' value='6' required /></center><center>6</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyPhoto' value='7' required /></center><center>7</center><center>very often</center></label></div>
+        </div>
+
+        <br /><br /><br />
+        <div class='qMain'>How often do you spontaneously notice how attractive (or unattractive) people's appearances are in your day-to-day life?</div>
+        <div class='likertWrap'>
+            <div class='likertLine'></div>
+            <div class='likert'><label><center><input type='radio' name='dailyFace' value='1' required /></center><center>1</center><center>very seldom</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyFace' value='2' required /></center><center>2</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyFace' value='3' required /></center><center>3</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyFace' value='4' required /></center><center>4</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyFace' value='5' required /></center><center>5</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyFace' value='6' required /></center><center>6</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='dailyFace' value='7' required /></center><center>7</center><center>very often</center></label></div>
+        </div>
+
+        <br /><br /><br />
+        <div class='qMain'>In terms of judging visual appeal of objects and scenes, how similar do you think your visual preferences are compares to the majority?</div>
+        <div class='likertWrap'>
+            <div class='likertLine'></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityPhoto' value='1' required /></center><center>1</center><center>very dissimilar</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityPhoto' value='2' required /></center><center>2</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityPhoto' value='3' required /></center><center>3</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityPhoto' value='4' required /></center><center>4</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityPhoto' value='5' required /></center><center>5</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityPhoto' value='6' required /></center><center>6</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityPhoto' value='7' required /></center><center>7</center><center>very similar</center></label></div>
+        </div>
+
+        <br /><br /><br />
+        <div class='qMain'>In terms of judging people's appearances, how similar do you think your visual preferences are compares to the majority?</div>
+        <div class='likertWrap'>
+            <div class='likertLine'></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityFace' value='1' required /></center><center>1</center><center>very dissimilar</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityFace' value='2' required /></center><center>2</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityFace' value='3' required /></center><center>3</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityFace' value='4' required /></center><center>4</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityFace' value='5' required /></center><center>5</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityFace' value='6' required /></center><center>6</center></label></div>
+            <div class='likert'><label><center><input type='radio' name='typicalityFace' value='7' required /></center><center>7</center><center>very similar</center></label></div>
+        </div>
+
+        <br /><br /><br />
+        <div class='qMain'>Did you complete this experiment seriously throughout (without randomly responding)?</div>
+        <div class='qSupporting'>You will receive your payment regardless what your answer is here. Please be honest for science! Thanks!</div>
+        <label><div class='option'><input class='optionRadio' type='radio' name='serious' value='0' /><div class='optionText'>No, I didn't.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='serious' value='1' /><div class='optionText'>Yes, I did.</div></div></label>
+
+        <br /><br /><br />
+        <div class='qMain'> Was any part of the procedure unclear? Did you have any problems completing any of the tasks?</div>
+        <div class='qSupporting'>You will receive your payment regardless what your answer is here. Please be honest for science! Thanks!</div>
+        <textarea id='problems' rows='3' cols='90'></textarea>
+
+        <br /><br /><br />
+        <div class='qMain'>What is your gender?</div>
+          <label><div class='option'><input class='optionRadio' type='radio' name='gender' value='F' /><div class='optionText'>Female</div></div></label>
+          <label><div class='option'><input class='optionRadio' type='radio' name='gender' value='M' /><div class='optionText'>Male</div></div></label>
+          <label><div class='option'><input class='optionRadio' type='radio' name='gender' value='O' /><div class='optionText'>Other</div></div></label>
+          <label><div class='option'><input class='optionRadio' type='radio' name='gender' value='N' /><div class='optionText'>I would rather not say</div></div></label>
+
+        <br /><br /><br />
+        <div class='qMain'>Please enter your age:</div>
+        <input type='number' id='age' min='0' max='200'/><br /><br /><br />
+        <div class='button' onclick='SUBMIT_Q()'>SUBMIT</div>
+        <br />
+        <br />
+    </div>
+
+    <!--======== DEBRIEFING ========-->
+    <div class='pageBox' id='debriefingBox'>
+        You have finished the experiment! Thank you very much!<br /><br /> Whenever you are ready, click END to submit your work. You may read the text below if you are interested in what we are studying.<br /><br />
+        <div class='button' onclick='END_TO_PROLIFIC()'>END</div>
+
+        <br /><br />
+        <b>Debriefing Sheet</b><br />
+        In this study, we are interested in whether individual's aesthetic taste is a general trait that can be observed in both preferences in images and preferences for people's appearances. If your taste is different from most others in terms of image preferences, would it be different from most others as well in your preferences for faces?<br /><br /> Please don't hesitate to contact the researchers if you have any questions:
+        <br /><br />
+        Clara Colombatto<br />
+        Yale Perception and Cognition Laboratory<br />
+        clara.colombatto@yale.edu<br />
+        <br />
+        Yi-Chia Chen<br />
+        Harvard Vision Sciences Laboratory<br />
+        UCLA Computational Vision and Learning Laboratory<br />
+        <a href='https://ycc.vision/' target='_blank'>https://ycc.vision/</a><br />
+        chenyichia.g@gmail.com<br />
+
+    </div>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.3/mobile-detect.min.js'></script>
+    <script src='func.js'></script>
+    <script src='expt.js'></script>
+    <script src='index.js'></script>
+</body>
+
+</html>

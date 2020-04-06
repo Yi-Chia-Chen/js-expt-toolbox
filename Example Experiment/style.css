@@ -1,0 +1,235 @@
+/* Yi-Chia Chen */
+
+body{
+    color: #dddddd;
+    background: #404040;
+    margin: 0;
+    padding: 0;
+    font-family: 'Quicksand', Sans-serif;
+    font-size: 20px;
+    line-height: 30px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+div.pageBox{
+    display: none;
+    position: relative;
+    margin: 20px auto auto auto;
+    padding: 5px;
+    width: 800px;
+}
+#instrBox {
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    -webkit-transform: translateY(-50%) translateY(-25px) translateX(50%);
+    -moz-transform: translateY(-50%) translateY(-25px) translateX(50%);
+    -ms-transform: translateY(-50%) translateY(-25px) translateX(50%);
+    -o-transform: translateY(-50%) translateY(-25px) translateX(50%);
+    transform: translateY(-50%) translateY(-25px) translateX(50%);
+}
+#instrBoxScroll {
+    position: relative;
+}
+#instrText {
+    margin: 0;
+    padding: 0;
+}
+#consentBox {
+    margin: 20px auto;
+}
+#consentTextBox {
+    position: relative;
+    margin: 0 auto;
+    padding: 20px 20px 20px 20px;
+    font-size: 16px;
+    line-height: 24px;
+    background: #606060;
+    border-style: dotted;
+    border-color: #dddddd;
+}
+#debriefingBox{
+	margin: 20px auto 100px auto;
+}
+.button {
+    position: relative;
+    margin: 25px auto auto auto;
+    width: 250px;
+    height: 35px;
+    font-size: 18px;
+    line-height: 35px;
+    text-align: center;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background: #252525;
+    color: #dddddd;
+}
+.button:hover {
+    cursor: pointer;
+    background: #303030;
+}
+.button:active {
+    background: #111111;
+}
+#trialBox{
+	position: relative;
+	margin: 20px auto 0 auto;
+	width: 650px;
+	height: 550px;
+}
+#progress{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+#testImg{
+	display: none;
+    position: absolute;
+    top: 50px;
+	width: 650px;
+	height: 450px;
+}
+#bufferDiv{
+	display: none;
+}
+.ratingContainer {
+	position: absolute;
+	top: 530px;
+	width: 650px;
+}
+.ratingButton{
+	position: absolute;
+	width: 45px;
+    height: 35px;
+	color: black;
+	border: 2px solid white;
+	text-align: center;
+	line-height: 35px;
+	cursor: pointer;
+}
+.ratingButton:hover{
+	border-color: #333388;
+}
+.ratingButton:active{
+	background: white;
+}
+#r1{
+	left: 165px;
+	background: #e6e6ff;
+}
+#r2{
+	left: 220px;
+	background: #ccccff;
+}
+#r3{
+	left: 275px;
+	background: #b3b3ff;
+}
+#r4{
+	left: 330px;
+	background: #9999ff;
+}
+#r5{
+	left: 385px;
+	background: #8080ff;
+}
+#r6{
+	left: 440px;
+	background: #6666ff;
+}
+#r1label, #r6label{
+	position: absolute;
+	top: 45px;
+    height: 35px;
+	color: #dddddd;
+	line-height: 35px;
+}
+#r1label{
+    left: 50px;
+    text-align: right;
+}
+#r6label{
+	left: 440px;
+}
+
+/* Questions */
+.likertWrap{
+	position: relative;
+	margin: 20px auto auto auto;
+	width: 630px;
+	height: 120px;
+}
+.likertLine{
+	position: absolute;
+	top: 9px;
+	left: 45px;
+	margin: 0 0 0 0;
+	width: 540px;
+	height: 6px;
+	background: #ccc;
+	z-index:1;
+}
+.likert{
+	position: relative;
+	margin: 0 0 0 0;
+	width: 90px;
+	float:left;
+	z-index:2;
+}
+.qMain {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+.qSupporting {
+    margin: 0;
+    padding: 0;
+    color: #bbbbbb;
+    font-size: 16px;
+    line-height: 25px;
+}
+.option {
+    position: relative;
+    width: 100%;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background: #555555;
+    margin: 10px 0;
+    padding: 7px;
+}
+.option:hover {
+    cursor: pointer;
+    background: gray;
+}
+.optionRadio {
+    position: absolute;
+    margin: 0;
+    left: 13px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.optionText {
+    position: relative;
+    left: 28px;
+    width: 765px;
+}
+input[type="text"],
+textarea {
+    background-color: #f5f5f5;
+}
+#qProblems {
+    position: relative;
+    width: 100%;
+    margin: 10px 0;
+}
