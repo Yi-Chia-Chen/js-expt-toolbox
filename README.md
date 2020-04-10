@@ -2,6 +2,7 @@
 This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 
 ## Version History
+- 2.0.1 (2020.04.09): Fix a bug
 - 2.0.0 (2020.04.06): Add a progress indicator,
                       Add detection for elements in full view,
                       Split trial.end() into trial.end() and trial.save(),

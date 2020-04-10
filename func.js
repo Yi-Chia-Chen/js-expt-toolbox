@@ -252,7 +252,7 @@ function CHECK_IF_RESPONDED(open_ended_list, choice_list) {
         all_responded = all_responded && (open_ended_list[i].replace(/(?:\r\n|\r|\n|\s)/g, '') != '');
     }
     for (var i in choice_list) {
-        all_responded = all_responded && (typeof choice_list[i] !== 'undefined');
+        all_responded = all_responded && (typeof choice_list[i] != 'undefined');
     }
     return all_responded;
 }
