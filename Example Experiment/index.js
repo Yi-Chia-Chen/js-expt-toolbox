@@ -9,51 +9,43 @@
 // ##        ##   ##  ##           ##
 // ######## ##     ## ##           ##
 
-const FORMAL = false; // XXX
-const EXPERIMENT_NAME = 'aesAtt';
-const SUBJ_NUM_FILE = 'subjNum_' + EXPERIMENT_NAME;
-const TRIAL_FILE = 'trial_' + EXPERIMENT_NAME;
-const SUBJ_FILE = 'subj_' + EXPERIMENT_NAME;
-const ATTRITION_FILE = 'attrition_' + EXPERIMENT_NAME;
+const FORMAL = false;
+const EXPERIMENT_NAME = 'Example';
+const SUBJ_NUM_FILE = 'subjNum_' + EXPERIMENT_NAME + '.txt';
+const TRIAL_FILE = 'trial_' + EXPERIMENT_NAME + '.txt';
+const SUBJ_FILE = 'subj_' + EXPERIMENT_NAME + '.txt';
+const VISIT_FILE = 'visit_' + EXPERIMENT_NAME + '.txt';
+const ATTRITION_FILE = 'attrition_' + EXPERIMENT_NAME + '.txt';
 const SAVING_SCRIPT = 'save.php';
-const SAVING_DIR = '';
+const SAVING_DIR = FORMAL ? 'data/formal':'data/testing';
 
-const BLOCK_TYPES = ['photo','face'];
-const CONDITIONS = ['photo_face','face_photo'];
-const BLOCK_N = BLOCK_TYPES.length;
+const BLOCK_N = 1;
 
 const VIEWPORT_MIN_W = 800;
 const VIEWPORT_MIN_H = 600;
 
+const INSTR_READING_TIME_MIN = 2;
+
 // trial variables
-const PHOTO_PRACTICE_LIST = SHUFFLE_ARRAY(['photo_prac1.jpg', 'photo_prac2.jpg']);
-const FACE_PRACTICE_LIST = SHUFFLE_ARRAY(['face_prac1_CFD-WF-233-112-N.jpg', 'face_prac2_CFD-AM-218-085-N.jpg']);
-const PRAC_TRIAL_LIST_DICT = {
-    'photo':PHOTO_PRACTICE_LIST,
-    'face':FACE_PRACTICE_LIST
-};
-const PRACTICE_TRIAL_N = PHOTO_PRACTICE_LIST.length; // 2
-const REPEAT_TRIAL_N = 35;
+const PRACTICE_LIST = ['prac.jpg'];
+const PRACTICE_TRIAL_N = PRACTICE_LIST.length;
+const REPEAT_TRIAL_N = 1;
 const STIM_N = 2;
 const STIM_PATH = 'Stimuli/';
-const PHOTO_NAME_LIST = SHUFFLE_ARRAY(RANGE(101, 101 + STIM_N));
-const PHOTO_LIST = PHOTO_NAME_LIST.map(x => x+'.jpg');
-const FACE_LIST = [
-    'face1.jpg',
-    'face2.jpg'];
-var repeat_photo_list = PHOTO_LIST.slice();
-var repeat_face_list = FACE_LIST.slice();
-repeat_photo_list = SHUFFLE_ARRAY(repeat_photo_list).splice(0, REPEAT_TRIAL_N);
-repeat_face_list = SHUFFLE_ARRAY(repeat_face_list).splice(0, REPEAT_TRIAL_N);
-const PHOTO_TRIAL_LIST = repeat_photo_list.concat(PHOTO_LIST); // trial list -- the trials are popped from the end of array so the repeats are in the beginning
-const FACE_TRIAL_LIST = repeat_face_list.concat(FACE_LIST);
-const TRIAL_LIST_DICT = {
-    'photo':PHOTO_TRIAL_LIST,
-    'face':FACE_TRIAL_LIST
-};
+const NAME_LIST = SHUFFLE_ARRAY(['101','188']);
+const STIM_LIST = NAME_LIST.map(x => x+'.jpg');
 
-const TRIAL_N = PHOTO_TRIAL_LIST.length;
+var repeat_list = STIM_LIST.slice();
+const TRIAL_LIST = CREATE_RANDOM_REPEAT_BEGINNING_LIST(STIM_LIST, REPEAT_TRIAL_N);
+const TRIAL_N = TRIAL_LIST.length;
 const INSTR_TRIAL_N = PRACTICE_TRIAL_N + TRIAL_N;
+
+// AQ variables
+const AQ_QUESTION_DICT = {
+    1: 'Statement 1',
+    2: 'Statement 2'
+}
+const AQ_LENGTH = Object.keys(AQ_QUESTION_DICT).length;
 
 // duration variables (in seconds)
 var INTERTRIAL_INTERVAL = 0.5;
@@ -71,30 +63,15 @@ var instr, subj, trial;
 // ##     ## ######## ##     ## ########     ##
 
 $(document).ready(function() {
-    subj = new subjObject(subj_options); // obtain subject number
-    subj.obtainID();
-    subj.assignCondition();
-    if (subj.id != null) {
-        if (subj.phone) { // asking for subj.phone will detect phone
-            $('#instrText').html('It seems that you are using a touchscreen device. Please use a laptop or desktop instead.<br /><br />If you believe you have received this message in error, please contact the experimenter at clara.colombatto@yale.edu<br /><br />Otherwise, please switch to a laptop or a desktop computer for this experiment.');
-            $('#nextButton').hide();
-            $('#instrBox').show();
-        } else {
-            instr = new instrObject(instr_options);
-            var CHECK_EXPT_READY = function(){
-                if(subj.conditionAssigned){
-                    clearInterval(interval_id);
-                    instr.condition = subj.condition.split('_');
-                    instr.text = INSTR_TEXT_DICT[instr.condition[0]];
-                    $('#instrText').html(instr.text[0]);
-                    $('#instrBox').show();
-                    subj.saveAttrition();
-                    trial_options['subj'] = subj;
-                    trial = new trialObject(trial_options);
-                }
-            };
-            var interval_id = setInterval(CHECK_EXPT_READY, 10);
-        }
+    subj = new subjObject(subj_options); // getting subject number
+    subj.id = subj.getID('sonacode');
+    subj.saveVisit();
+    if (subj.phone) { // asking for subj.phone will detect phone
+        $('#instrText').html('It seems that you are using a touchscreen device or a phone. Please use a laptop or desktop instead.<br /><br />If you believe you have received this message in error, please contact the experimenter at experimenter@domain.edu<br /><br />Otherwise, please switch to a laptop or a desktop computer for this experiment.');
+        $('#nextButton').hide();
+        $('#instrBox').show();
+    } else if (subj.id !== null){
+        $('#captchaBox').show();
     }
 });
 
@@ -114,13 +91,14 @@ const SUBJ_TITLES = ['num',
                      'userAgent',
                      'endTime',
                      'duration',
-                     'condition',
-                     'instrQPhotoAttemptN',
-                     'instrQFaceAttemptN',
-                     'dailyPhoto',
-                     'dailyFace',
-                     'typicalityPhoto',
-                     'typicalityFace',
+                     'instrQAttemptN',
+                     'instrReadingTimes',
+                     'quickReadingPageN',
+                     'hiddenCount',
+                     'hiddenDurations',
+                     'daily',
+                     'typicality',
+                     'aqResponses',
                      'serious',
                      'problems',
                      'gender',
@@ -131,50 +109,124 @@ const SUBJ_TITLES = ['num',
                     ];
 
 function INVALID_ID_FUNC() {
-    $('#instrText').html("We can't identify a valid Prolific ID. Please click <a href='.'><u>here</u></a> to try again. Thank you!");
+    $('#instrText').html("We can't identify a valid code from subject pool website. Please reopen the study from the subject pool website again. Thank you!");
     $('#nextButton').hide();
     $('#instrBox').show();
 }
 
-function SUBMIT_Q() {
-    subj.dailyPhoto = $('input[name=dailyPhoto]:checked').val();
-    subj.dailyFace = $('input[name=dailyFace]:checked').val();
-    subj.typicalityPhoto = $('input[name=typicalityPhoto]:checked').val();
-    subj.typicalityFace = $('input[name=typicalityFace]:checked').val();
+function HCAPTCHA_SUBMIT() {
+    const HCAPTCHA_RESPONSE = hcaptcha.getResponse();
+    function CAPTCHA_RESULTS(results) {
+        if (results == 'passed') {
+            $('#captchaBox').hide();
+            instr = new instrObject(instr_options);
+            instr.start();
+            trial_options['subj'] = subj;
+            trial = new trialObject(trial_options);
+        } else {
+            $('#captchaBox').hide();
+            $('#instrText').html('Oops! An error has occurred. Please contact the experiment experimenter@domain.edu with the code "CAPTCHA_ERR". Sorry!');
+            $('#nextButton').hide();
+            $('#instrBox').show();
+        }
+    }
+    function CAPTCHA_AJAX_FAILED() {
+        $('#instrText').html('Oops! An error has occurred. Please contact the experiment experimenter@domain.edu with the code "CAPTCHA_AJAX_ERR". Sorry!');
+        $('#nextButton').hide();
+        $('#instrBox').show();
+    }
+    POST_DATA('hCaptcha_verification.php', { 'hCaptcha_token': HCAPTCHA_RESPONSE }, CAPTCHA_RESULTS, CAPTCHA_AJAX_FAILED);
+}
+
+function HANDLE_VISIBILITY_CHANGE() {
+    if (document.hidden) {
+        subj.hiddenCount += 1;
+        subj.hiddenStartTime = Date.now();
+    } else  {
+        subj.hiddenDurations.push((Date.now() - subj.hiddenStartTime)/1000);
+    }
+}
+
+function SUBMIT_LIKERT_Q() {
+    subj.daily = $('input[name=daily]:checked').val();
+    subj.typicality = $('input[name=typicality]:checked').val();
+    var all_responded = CHECK_IF_RESPONDED([], [subj.daily, subj.typicality]);
+    if (all_responded) {
+        $('#likertBox').hide();
+        $('#aqBox').show();
+        $(document).keyup(function(e) {
+            if (e.which == 32) { // the 'space' key
+                $(document).off('keyup');
+                START_AQ();
+            }
+        });
+    } else {
+        $('#LikertWarning').text('Please answer all questions to complete the first part. Thank you!');
+    }
+}
+
+function START_AQ() {
+    $('#aqInstrText').hide();
+    subj.aqResponses  = {};
+    subj.aqNowQ = 1;
+    $('#aqQ').text(AQ_QUESTION_DICT[1]);
+    $('#aqContainer').show();
+    AQ_RESPONSE();
+}
+
+function AQ_RESPONSE() {
+    $('.aqButton').mouseup(function(event) {
+        $('.aqButton').unbind('mouseup');
+        subj.aqResponses[subj.aqNowQ] = event.target.id;
+        if (subj.aqNowQ == AQ_LENGTH){
+            $('#aqBox').hide();
+            $('#questionsBox').show();
+            subj.detectVisibilityEnd();
+        } else {
+            subj.aqNowQ += 1;
+            $('#aqQ').text(AQ_QUESTION_DICT[subj.aqNowQ]);
+            $('#aqProgress').text( Math.round(100 * subj.aqNowQ / (AQ_LENGTH+2)) );
+            AQ_RESPONSE();
+        }
+    });
+}
+
+function SUBMIT_DEBRIEFING_Q() {
     subj.serious = $('input[name=serious]:checked').val();
     subj.problems = $('#problems').val();
     subj.gender = $('input[name=gender]:checked').val();
     subj.age = $('#age').val();
     var open_ended_list = [subj.problems, subj.age];
-    var all_responded = CHECK_IF_RESPONDED(open_ended_list, [subj.dailyPhoto, subj.dailyFace, subj.typicalityPhoto, subj.typicalityFace, subj.serious, subj.gender]);
+    var all_responded = CHECK_IF_RESPONDED(open_ended_list, [subj.daily, subj.typicality]);
     if (all_responded) {
         for (var i = 0; i < open_ended_list.length; i++) {
             open_ended_list[i] = open_ended_list[i].replace(/(?:\r\n|\r|\n)/g, '<br />');
         }
-        subj.instrQPhotoAttemptN = instr.qAttemptN['photo'];
-        subj.instrQFaceAttemptN = instr.qAttemptN['face'];
+        subj.instrQAttemptN = instr.qAttemptN['onlyQ'];
+        subj.instrReadingTimes = instr.readingTimes;
+        subj.quickReadingPageN = subj.instrReadingTimes.filter(d => d < INSTR_READING_TIME_MIN).length;
+        subj.aqResponses = JSON.stringify(subj.aqResponses);
         subj.submitQ();
         $('#questionsBox').hide();
         $('#debriefingBox').show();
+        $('html')[0].scrollIntoView();
     } else {
-        alert('Please answer all questions to complete the experiment. Thank you!');
+        $('#Qwarning').text('Please answer all questions to complete the experiment. Thank you!');
     }
 }
 
 var subj_options = {
     subjNumFile: SUBJ_NUM_FILE,
-    condition: 'auto',
-    conditionList: CONDITIONS,
     titles: SUBJ_TITLES,
-    mturk: false,
-    prolific: true,
     invalidIDFunc: INVALID_ID_FUNC,
     viewportMinW: VIEWPORT_MIN_W,
     viewportMinH: VIEWPORT_MIN_H,
     savingScript: SAVING_SCRIPT,
+    visitFile: VISIT_FILE,
     attritionFile: ATTRITION_FILE,
     subjFile: SUBJ_FILE,
-    savingDir: SAVING_DIR
+    savingDir: SAVING_DIR,
+    handleVisibilityChange: HANDLE_VISIBILITY_CHANGE
 };
 
 
@@ -186,89 +238,83 @@ var subj_options = {
 //  ##  ##   ### ##    ##    ##    ##    ##
 // #### ##    ##  ######     ##    ##     ##
 
-var instr_photo_first = new Array;
-instr_photo_first[0] = 'Thank you for participating! Please read all the instructions carefully in the next few pages.<br /><br />Do not use the refresh or back buttons, as you may be locked out from completing the experiment.<br /><br />This experiment will take about 20 minutes to complete.';
-instr_photo_first[1] = 'IMPORTANT: Please maximize the size of your browser window <b>NOW</b> to make sure the experiment works as expected.';
-instr_photo_first[2] = 'We are interested in your aesthetic preferences. There are 2 parts in this experiment. Each part will take about 10 minutes.';
-instr_photo_first[3] = 'In the first half of the experiment, you will be shown ' + INSTR_TRIAL_N + ' images, one at a time. We are interested in how <b>visually appealing</b> you find each image to be. <br /><br />In other words, how good/beautiful do you think the image looks?<br /><br />For each image, use the mouse to click on one of the options from 1 to 6 to rate how visually appealing you find that image to be -- where "6" indicates that you find it very visually appealing, and "1" indicates that you find it very not visually appealing.';
-instr_photo_first[4] = 'You might sometimes find that you like an image because of its meaning or the subject it depicts (e.g. that it contains a cat, if you like cats) -- but what we are really asking about is just how <i><b>visually</b></i> appealing you think it is.<br /><br />(As a result, a image of a cat could nevertheless look dull to you even if you like cats.)<br /><br /><b>Please try your best NOT to consider the meaning of the images, and just to evaluate how visually appealing each one is.</b>';
-instr_photo_first[5] = "Of course, this task might seem a bit odd since we're rarely asked to explicitly rate how visually appealing an image is, and it might be a bit awkward. Nonetheless you might find that you have a strong initial intuition about how appealing each image looks: and that's what we're after. So when making your responses, don't think about it too much: we're really just interested in your gut reaction.";
-instr_photo_first[6] = 'On the next page, we will ask you a question about the instructions.';
-instr_photo_first[7] = ''; // instruction question 1
-instr_photo_first[8] = 'Great! You can press SPACE to start the first part. Please do not interrupt the task after you start (e.g. by switching to other windows or tabs on your computer)';
+var instr_text = new Array;
+instr_text[0] = "Welcome, fellow human!<br /><br />Do you sometimes notice what people consider as beautiful can be very different? This study is about that!<br /><br />We are a bunch of scientists fascinated by the human aesthetic experience, and we want to learn how people's taste differ.";
+instr_text[1] = "Your contributions may help in making AI, analyzing art, and designing things around us in everyday life!<br /><br />And, most importantly, we hope this is fun for you, too!";
+instr_text[2] = 'Please help us by reading the instructions in the next few pages carefully, and avoid using the refresh or back buttons.';
+instr_text[3] = 'Now, please maximize your browser window.';
+instr_text[4] = 'This study takes about 30 minutes, and there are 2 parts, with each taking about 15 minutes.';
+instr_text[5] = "Here's what your job is in the first part: you will be shown " + INSTR_TRIAL_N + ' images, one at a time. Here is an example:';
+instr_text[6] = 'We are interested in how <strong>visually pleasing</strong> you find each image to be.<br /><br />In other words, how good/beautiful do you think the image looks?';
+instr_text[7] = 'Six options will be available below the images as six buttons (as in below). Just click one of the options based on your preference.';
+instr_text[8] = 'You might sometimes find that you like an image because of its meaning or the subject it depicts (e.g. that it contains a cat, if you like cats) — but what we are really asking about is just how <strong>visually</strong> pleasing you think it is.<br /><br />(As a result, an image of a cat could nevertheless look dull to you even if you like cats.)<br /><br />';
+instr_text[9] = 'Please try your best NOT to consider the meaning of the images, and just to evaluate how visually pleasing each one is.';
+instr_text[10] = "The next page is a quick instruction quiz. (It's very simple!)";
+instr_text[11] = ''; // instruction question 1
+instr_text[12] = "Great! You can press SPACE to start. Please focus after you start (Don't switch to other windows or tabs!)";
 
-instr_photo_first[9] = 'Thank you! You have completed the first half of the experiment!'
-instr_photo_first[10] = 'In the second half, you will view ' + INSTR_TRIAL_N + ' faces. ' + "We are interested in how <b>visually attractive</b> you find each person to be, based on just looking at their face. " + 'You will rate the face from 1 to 6 in the same way as the first half (i.e., "6" indicates that you find the face very visually attractive).<br /><br />'
-instr_photo_first[11] = "You might sometimes find that you like a face because of its facial expression or the personality it seems to show (e.g. from looking at their face, you might think that the person is happy or has a warm personality) -- but what we are really asking about is just how <i><b>visually attractive</b></i> you think the face is.<br /><br />(As a result, a person that appears warm and happy could nevertheless look unattractive to you even if you like their current emotional state or personality.)<br /><br /><b>Please try your best NOT to consider other attributes of the faces, and just to evaluate how visually attractive you think the face is.</b>";
-instr_photo_first[12] = "Of course, this task might seem a bit odd since we're rarely asked to explicitly rate how visually attractive people are, and it might be a bit awkward. Nonetheless you might find that you have a strong initial intuition about how attractive each face looks: and that's what we're after. So when making your responses, don't think about it too much: we're really just interested in your gut reaction.";
-instr_photo_first[13] = 'On the next page, we will ask you a question about the instructions of the second half.';
-instr_photo_first[14] = ''; // instruction question 2
-instr_photo_first[15] = 'Great! Please press SPACE to start when ' + "you're ready.";
-
-var instr_face_first = new Array;
-instr_face_first[0] = instr_photo_first[0];
-instr_face_first[1] = instr_photo_first[1];
-instr_face_first[2] = instr_photo_first[2];
-instr_face_first[3] = 'In the first half of the experiment, you will be shown ' + INSTR_TRIAL_N + " faces, one at a time. We are interested in how <b>visually attractive</b> you find each person to be, based on just looking at their face. <br /><br />In other words, how good-looking do you think the person's face is?<br /><br />" + 'For each face, use the mouse to click on one of the options from 1 to 6 to rate how visually attractive you find that face to be -- where "6" indicates that you find it very visually attractive, and "1" indicates that you find it very not visually attractive.';
-instr_face_first[4] = "You might sometimes find that you like a face because of its facial expression or the personality it seems to show (e.g. from looking at their face, you might think that the person is happy or has a warm personality) -- but what we are really asking about is just how <i><b>visually attractive</b></i> you think the face is.<br /><br />(As a result, a person that appears warm and happy could nevertheless look unattractive to you even if you like their current emotional state or personality.)<br /><br /><b>Please try your best NOT to consider other attributes of the faces, and just to evaluate how visually attractive you think the face is.</b>";
-instr_face_first[5] = "Of course, this task might seem a bit odd since we're rarely asked to explicitly rate how visually attractive people are, and it might be a bit awkward. Nonetheless you might find that you have a strong initial intuition about how attractive each face looks: and that's what we're after. So when making your responses, don't think about it too much: we're really just interested in your gut reaction.";
-instr_face_first[6] = instr_photo_first[6]
-instr_face_first[7] = instr_photo_first[7] // instruction question 1
-instr_face_first[8] = instr_photo_first[8]
-
-instr_face_first[9] = instr_photo_first[9]
-instr_face_first[10] = 'In the second half, you will view ' + INSTR_TRIAL_N + ' non-face images. ' + "We are interested in how <b>visually appealing</b> you find each image to be." + 'You will rate the image from 1 to 6 in the same way as the first half (i.e., "6" indicates that you find the image very visually appealing).<br /><br />'
-instr_face_first[11] = 'You might sometimes find that you like an image because of its meaning or the subject it depicts (e.g. that it contains a cat, if you like cats) -- but what we are really asking about is just how <i><b>visually</b></i> appealing you think it is.<br /><br />(As a result, a image of a cat could nevertheless look dull to you even if you like cats.)<br /><br /><b>Please try your best NOT to consider the meaning of the images, and just to evaluate how visually appealing each one is.</b>';
-instr_face_first[12] = "Of course, this task might seem a bit odd since we're rarely asked to explicitly rate how visually appealing an image is, and it might be a bit awkward. Nonetheless you might find that you have a strong initial intuition about how appealing each image looks: and that's what we're after. So when making your responses, don't think about it too much: we're really just interested in your gut reaction.";
-instr_face_first[13] = instr_photo_first[13];
-instr_face_first[14] = instr_photo_first[14]; // instruction question 2
-instr_face_first[15] = instr_photo_first[15];
-
-const INSTR_Q_INDICES = [7,14];
-
-const INSTR_TEXT_DICT = {
-    'photo':instr_photo_first,
-    'face':instr_face_first
+const INSTR_FUNC_DICT = {
+    0: SHOW_TASTE_IMG,
+    1: HIDE_INSTR_IMG,
+    3: SHOW_MAXIMIZE_WINDOW,
+    4: HIDE_INSTR_IMG,
+    5: SHOW_EXAMPLE_IMG,
+    6: HIDE_INSTR_IMG,
+    7: SHOW_RATING_BUTTONS,
+    8: HIDE_RATING_BUTTONS,
+    11: SHOW_INSTR_QUESTION,
+    12: SHOW_CONSENT
 };
 
-function RETRIEVE_CURRENT_CONDITION(index) {
-    if (index == INSTR_Q_INDICES[0]) { // first instruction question
-        var now_condition_num = 1;
-    }
-    else { // second instruction question
-        var now_condition_num = 2;
-    }
-    return instr.condition[now_condition_num-1].charAt(0).toUpperCase() + instr.condition[now_condition_num-1].slice(1)
+function SHOW_INSTR_IMG(file_name) {
+    $('#instrImg').attr('src', STIM_PATH + file_name);
+    $('#instrImg').css('display', 'block');
+}
+
+function HIDE_INSTR_IMG() {
+    $('#instrImg').css('display', 'none');
+}
+
+function SHOW_TASTE_IMG() {
+    SHOW_INSTR_IMG('instr_taste.jpg');
+}
+
+function SHOW_MAXIMIZE_WINDOW() {
+    SHOW_INSTR_IMG('maximize_window.png');
+}
+
+function SHOW_EXAMPLE_IMG() {
+    SHOW_INSTR_IMG('prac.jpg');
+}
+
+function SHOW_RATING_BUTTONS() {
+    $('#ratingExample').show();
+}
+
+function HIDE_RATING_BUTTONS() {
+    $('#ratingExample').hide();
 }
 
 function SHOW_INSTR_QUESTION() {
     $('#instrBox').hide();
-    var now_question = RETRIEVE_CURRENT_CONDITION(instr.index);
-    $('#instrQ'+now_question).show();
+    $('#instrQBox').show();
 }
 
 function SUBMIT_INSTR_Q() {
-    var now_question = RETRIEVE_CURRENT_CONDITION(instr.index);
-    var instrChoice = $('input[name=instrQ'+now_question+']:checked').val();
-
+    var instrChoice = $('input[name="instrQ"]:checked').val();
     if (typeof instrChoice === 'undefined') {
-        alert('Please answer the question to start the experiment. Thank you!');
-    } else if (instrChoice != 'you') {
-        instr.qAttemptN[now_question.toLowerCase()] += 1;
+        $('#instrQWarning').text('Please answer the question. Thank you!');
+    } else if (instrChoice != 'aesthetics') {
+        instr.qAttemptN['onlyQ'] += 1;
         $('#instrText').html('You have given an incorrect answer. Please read the instructions again carefully.');
         $('#instrBox').show();
-        $('#instrQ'+now_question).hide();
-        $('input[name=instrQ'+now_question+']:checked').prop('checked', false);
-        if (instr.index == INSTR_Q_INDICES[0]) { // first instruction question
-            instr.index = 0; // skipping the first page of instructions if they are reading them the second time
-        } else { // second instruction question
-            instr.index = INSTR_Q_INDICES[0]+2;
-        }
+        $('#instrQBox').hide();
+        $('input[name="instrQ"]:checked').prop('checked', false);
+        instr.index = -1;
     } else {
         instr.next();
+        $('#instrQBox').hide();
         $('#instrBox').show();
-        $('#instrQ'+now_question).hide();
-        $('input[name=instrQ'+now_question+']:checked').prop('checked', false);
     }
 }
 
@@ -283,35 +329,16 @@ function SHOW_CONSENT() {
             $('#instrBoxScroll').attr('id', 'instrBox');
             $('#instrBox').hide();
             $('#consentBox').hide();
-            trial.firstCondition = instr.condition[0];
-            SHOW_BLOCK(trial.firstCondition);
+            subj.saveAttrition();
+            SHOW_BLOCK();
         }
     });
 }
-
-function READY_SECOND_BLOCK() {
-    $('#nextButton').hide();
-    $(document).keyup(function(e) {
-        if (e.which == 32) { // the 'space' key
-            $(document).off('keyup');
-            $('#instrBox').hide();
-            $('#consentBox').hide();
-            SHOW_BLOCK(instr.condition[1]);
-        }
-    });
-}
-
-
-
-var instr_func_dict = {};
-instr_func_dict[INSTR_Q_INDICES[0]] = SHOW_INSTR_QUESTION;
-instr_func_dict[INSTR_Q_INDICES[0]+1] = SHOW_CONSENT;
-instr_func_dict[INSTR_Q_INDICES[1]] = SHOW_INSTR_QUESTION;
-instr_func_dict[instr_photo_first.length-1] = READY_SECOND_BLOCK;
 
 var instr_options = {
-    funcDict: instr_func_dict,
-    qConditions: BLOCK_TYPES
+    text: instr_text,
+    funcDict: INSTR_FUNC_DICT,
+    qConditions: ['onlyQ']
 };
 
 
@@ -323,28 +350,26 @@ var instr_options = {
 //    ##    ##    ##   ##  ##     ## ##
 //    ##    ##     ## #### ##     ## ########
 
-function SHOW_BLOCK(condition) {
-    if (condition == 'photo') {
-        var now_label = 'appealing';
-    }
-    else {
-        var now_label = 'attractive';
-    }
-    $('#r6label').html('Very visually <br />' + now_label);
-    $('#r1label').html('Very not <br />visually ' + now_label);
+const TRIAL_TITLES = [
+    'num',
+    'date',
+    'subjStartTime',
+    'trialNum',
+    'stimName',
+    'inView',
+    'response',
+    'rt'];
+
+function SHOW_BLOCK() {
     $('#instrBox').hide();
     $('#trialBox').show();
-    trial.blockNum = trial.blockNum + 1;
-    trial.condition = condition;
-    trial.trialNum = -trial.pracTrialN;
-    trial.trialList = TRIAL_LIST_DICT[condition];
-    trial.pracList = PRAC_TRIAL_LIST_DICT[condition];
+    subj.detectVisibilityStart();
     trial.run();
 }
 
 function TRIAL_UPDATE(formal_trial, last, this_trial, next_trial, path) {
     trial.stimName = this_trial;
-    $('#progress').text(trial.progress + '% completed');
+    $('#progress').text(trial.progress);
     $('#testImg').attr('src', path + this_trial);
     if (!last) {
         $('#bufferImg').attr('src', path + next_trial);
@@ -353,43 +378,24 @@ function TRIAL_UPDATE(formal_trial, last, this_trial, next_trial, path) {
 
 function TRIAL() {
     $('#testImg').show();
-    $('.ratingButton').mouseup(function(event) {
-        $('.ratingButton').unbind('mouseup');
+    $('.aesButton').mouseup(function(event) {
+        $('.aesButton').unbind('mouseup');
         trial.inView = CHECK_FULLY_IN_VIEW($('#testImg'));
         $('#testImg').hide();
         trial.end(event.target.id);
     });
 }
 
-function END_BLOCK() {
+function END_EXPT() {
     $('#trialBox').hide();
-    $('#nextButton').show();
-    if (trial.blockNum == BLOCK_N) {
-        trial.save();
-        $('#questionsBox').show();
-    }
-    else {
-        instr.next();
-        $('#instrBox').show();
-    }
+    $('#likertBox').show();
+    trial.save();
 }
 
-function END_TO_PROLIFIC() {
-    window.location.href = 'https://app.prolific.co/submissions/complete?cc=4EECC2A1';
+function END_TO_SONA() {
+    const COMPLETION_URL = /*automatically generated url XXX */ + subj.id;
+    window.location.href = COMPLETION_URL;
 }
-
-const TRIAL_TITLES = [
-    'num',
-    'date',
-    'subjStartTime',
-    'firstCondition',
-    'blockNum',
-    'condition',
-    'trialNum',
-    'stimName',
-    'inView',
-    'response',
-    'rt'];
 
 var trial_options = {
     subj: 'pre-define', // assign after subj is created
@@ -400,11 +406,11 @@ var trial_options = {
     dataFile: TRIAL_FILE,
     savingScript: SAVING_SCRIPT,
     savingDir: SAVING_DIR,
-    trialList: false, // assign in each block
-    pracList: false, // assign in each block
+    trialList: TRIAL_LIST,
+    pracList: PRACTICE_LIST,
     intertrialInterval: INTERTRIAL_INTERVAL,
     updateFunc: TRIAL_UPDATE,
     trialFunc: TRIAL,
-    endExptFunc: END_BLOCK,
+    endExptFunc: END_EXPT,
     progressInfo: true
 }

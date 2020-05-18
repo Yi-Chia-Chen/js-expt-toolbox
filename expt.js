@@ -20,16 +20,16 @@ class subjObject {
             condition: false,
             conditionList: [''],
             titles: [''],
-            mturk: true,
-            prolific: false,
-            idFunc: false,
             invalidIDFunc: false,
+            validIDFunc: false,
             viewportMinW: 0,
             viewportMinH: 0,
             savingScript: 'save.php',
-            attritionFile: 'attrition',
-            subjFile: 'subj',
-            savingDir: 'testing'
+            attritionFile: 'attrition.txt',
+            visitFile: 'visit.txt',
+            subjFile: 'subj.txt',
+            savingDir: 'data/testing',
+            handleVisibilityChange: function(){},
         }, options);
         if (this.num == 'pre-post') {
             this.obtainSubjNum(this.subjNumScript, this.subjNumFile);
@@ -39,6 +39,8 @@ class subjObject {
         this.date = FORMAT_DATE(this.dateObj, 'UTC', '-', true);
         this.startTime = FORMAT_TIME(this.dateObj, 'UTC', ':', true);
         this.userAgent = window.navigator.userAgent;
+        this.hiddenCount = 0;
+        this.hiddenDurations = [];
     }
 
     obtainSubjNum(subjNumScript, subjNumFile) {
@@ -52,7 +54,7 @@ class subjObject {
         function SUBJ_NUM_UPDATE_FAILED() {
             that.num = -999;
         }
-        POST_DATA(subjNumScript, { 'fileName': subjNumFile }, SUBJ_NUM_UPDATE_SUCCEEDED, SUBJ_NUM_UPDATE_FAILED);
+        POST_DATA(subjNumScript, { 'directory_path': this.savingDir, 'file_name': this.subjNumFile }, SUBJ_NUM_UPDATE_SUCCEEDED, SUBJ_NUM_UPDATE_FAILED);
     }
 
     assignCondition() {
@@ -67,49 +69,56 @@ class subjObject {
         var interval_id = setInterval(CHECK_SUBJ_NUM, 10);
     }
 
-    obtainID(){
-        if (this.mturk) {
-            this.id = this.obtainWorkerID();
-        } else if(this.prolific){
-            this.id = this.obtainProlificID();
-        } else if (this.idFunc != false) {
-            this.id = this.idFunc();
+    saveVisit() {
+        var data = 'subjNum\tstartDate\tstartTime\tid\tuserAgent\tinView\tviewportW\tviewportH\n';
+        this.viewport = this.viewportSize;
+        this.inView = this.viewport['inView'];
+        this.viewportW = this.viewport['w'];
+        this.viewportH = this.viewport['h'];
+        var dataList = [this.num, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
+        data += LIST_TO_FORMATTED_STRING(dataList);
+        var postData = {
+            'directory_path': this.savingDir,
+            'file_name': this.visitFile,
+            'data': data
+        };
+        $.ajax({
+            type: 'POST',
+            url: this.savingScript,
+            data: postData,
+        });
+    }
+
+    getID(get_variable) {
+        var id = GET_PARAMETERS(get_variable, null);
+        var invalid_id = (id == null);
+        if (!invalid_id) {
+            id = id.replace(/\s+/g, '');
+            invalid_id = (id == '');
+        }
+        if (invalid_id) {
+            if (this.invalidIDFunc !== false) {
+                this.invalidIDFunc();
+            }
+            return null;
+        } else {
+            if (this.validIDFunc !== false) {
+                this.validIDFunc();
+            }
+            return id;
         }
     }
 
-    obtainWorkerID() {
-        var workerID = GET_PARAMETERS('workerId', 'getFailed');
-        if (workerID == 'getFailed') {
-            workerID = prompt('Please enter your worker ID:', '');
+    checkID(id) {
+        var invalid_id = (id == null);
+        if (!invalid_id) {
+            id = id.replace(/\s+/g, '');
+            invalid_id = (id == '');
         }
-        var invalidID = (workerID == null);
-        if (!invalidID) {
-            workerID = workerID.replace(/\s+/g, '');
-            invalidID = (workerID == '');
-        }
-        if (invalidID) {
-            this.invalidIDFunc();
+        if (invalid_id) {
             return null;
         } else {
-            return workerID;
-        }
-    }
-
-    obtainProlificID() {
-        var prolificID = GET_PARAMETERS('PROLIFIC_PID', 'getFailed');
-        if (prolificID == 'getFailed') {
-            prolificID = prompt('Please enter your Prolific ID:', '');
-        }
-        var invalidID = (prolificID == null);
-        if (!invalidID) {
-            prolificID = prolificID.replace(/\s+/g, '');
-            invalidID = (prolificID == '');
-        }
-        if (invalidID) {
-            this.invalidIDFunc();
-            return null;
-        } else {
-            return prolificID;
+            return id;
         }
     }
 
@@ -134,10 +143,9 @@ class subjObject {
         var dataList = [this.num, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
         data += LIST_TO_FORMATTED_STRING(dataList);
         var postData = {
-            'id': this.attritionFile, //filename to save the data with
-            'experimenter': 'ycc', // experimenter folder to save it in
-            'experimentName': this.savingDir, //directory to save it in
-            'curData': data // data to save
+            'directory_path': this.savingDir,
+            'file_name': this.attritionFile,
+            'data': data
         };
         $.ajax({
             type: 'POST',
@@ -153,16 +161,25 @@ class subjObject {
         var dataList = LIST_FROM_ATTRIBUTE_NAMES(this, this.titles);
         this.data += LIST_TO_FORMATTED_STRING(dataList);
         var postData = {
-            'id': this.subjFile, //filename to save the data with
-            'experimenter': 'ycc', // experimenter folder to save it in
-            'experimentName': this.savingDir, //directory to save it in
-            'curData': this.data // data to save
+            'directory_path': this.savingDir,
+            'file_name': this.subjFile,
+            'data': this.data
         };
         $.ajax({
             type: 'POST',
             url: this.savingScript,
             data: postData,
         });
+    }
+
+    detectVisibilityStart() {
+        var that = this;
+        document.addEventListener('visibilitychange', that.handleVisibilityChange);
+    }
+
+    detectVisibilityEnd() {
+        var that = this;
+        document.removeEventListener('visibilitychange', that.handleVisibilityChange);
     }
 }
 
@@ -184,8 +201,8 @@ class trialObject {
             titles: '',
             stimPath: 'Stimuli/',
             dataFile: '',
-            savingScript: 'mySave.php',
-            savingDir: 'testing',
+            savingScript: 'save.php',
+            savingDir: 'data/testing',
             trialList: [],
             pracList: [],
             intertrialInterval: 0.5,
@@ -208,24 +225,21 @@ class trialObject {
             this.progress = Math.round( 100 * (this.trialNum+this.pracTrialN) / (this.trialN+this.pracTrialN) );
         }
         this.trialNum++;
-        var formal = this.trialNum > 0;
-        if (formal) {
-            var last = this.trialNum == this.trialN;
-            this.thisTrial = this.trialList.pop();
-        } else {
-            var last = this.trialNum == 0;
-            this.thisTrial = this.pracList.pop();
-        }
-        if (!last) {
-            if (formal) {
-                var nextTrial = this.trialList[this.trialList.length - 1];
+        const FORMAL = this.trialNum > 0;
+        const LAST = FORMAL ? this.trialNum == this.trialN : this.trialNum == 0;
+        this.thisTrial = FORMAL ? this.trialList.pop() : this.pracList.pop();
+
+        var that = this;
+        function findNextTrial(last, formal) {
+            if (last){
+                return false
             } else {
-                var nextTrial = this.pracList[this.pracList.length - 1];
+                return formal ? that.trialList[that.trialList.length - 1] : that.pracList[that.pracList.length - 1];
             }
-        } else {
-            var nextTrial = false;
         }
-        this.updateFunc(formal, last, this.thisTrial, nextTrial, this.stimPath);
+        const NEXT_TRIAL = findNextTrial(LAST, FORMAL);
+
+        this.updateFunc(FORMAL, LAST, this.thisTrial, NEXT_TRIAL, this.stimPath);
 
         var that = this;
         const START_STIM = function() {
@@ -252,12 +266,23 @@ class trialObject {
         }
     }
 
+    rest(box_element, text_element, callback, callback_parameters) {
+        text_element.html('You are done with '+ this.progress + '% of the study!<br /><br />Take a short break now and hit space to continue whenever you are ready.')
+        box_element.show();
+        $(document).keyup(function(e) {
+            if (e.which == 32) {
+                $(document).off('keyup');
+                box_element.hide();
+                callback(callback_parameters);
+            }
+        });
+    }
+
     save() {
         var postData = {
-            'id': this.dataFile, //filename to save the data with
-            'experimenter': 'ycc', // experimenter folder to save it in
-            'experimentName': this.savingDir, //directory to save it in
-            'curData': this.allData // data to save
+            'directory_path': this.savingDir,
+            'file_name': this.dataFile,
+            'data': this.allData // data to save
         };
         $.ajax({
             type: 'POST',
@@ -290,15 +315,27 @@ class instrObject {
         for (var i=0;i<this.qConditions.length;i++){
             this.qAttemptN[this.qConditions[i]] = 1;
         }
+        this.readingTimes = [];
+    }
+
+    start(textBox = $('#instrBox'), textElement = $('#instrText')) {
+        textElement.html(this.text[0]);
+        if (this.instrKeys.includes(this.index)) {
+            this.funcDict[this.index]();
+        }
+        textBox.show();
+        this.startTime = Date.now();
     }
 
     next(textElement = $('#instrText')) {
+        this.readingTimes.push((Date.now() - this.startTime)/1000);
         this.index += 1;
         if (this.index < this.text.length) {
             textElement.html(this.text[this.index]);
             if (this.instrKeys.includes(this.index)) {
                 this.funcDict[this.index]();
             }
+            this.startTime = Date.now();
         } else {
             this.startExptFunc();
         }

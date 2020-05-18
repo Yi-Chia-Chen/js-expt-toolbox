@@ -28,7 +28,7 @@ function FACTORIAL_COND(factor_list) {
         all_conditions = REPEAT_ELEMENTS_IN_ARRAY(all_conditions, now_factor.length);
         for (var i = 0; i < all_conditions.length; i += now_factor.length) {
             for (var j = 0; j < now_factor.length; j++) {
-                index = i + j;
+                var index = i + j;
                 all_conditions[index].push(now_factor[j]);
             }
         }
@@ -120,20 +120,14 @@ function FORMAT_DATE(date_obj, time_zone, divider, padded) {
     time_zone = (time_zone === undefined) ? 'UTC' : time_zone;
     divider = (divider === undefined) ? '.' : divider;
     padded = (padded === undefined) ? true : padded;
-    if (time_zone == 'UTC') {
-        var now_year = date_obj.getUTCFullYear();
-        var now_month = date_obj.getUTCMonth() + 1;
-        var now_date = date_obj.getUTCDate();
-    } else {
-        var now_year = date_obj.getFullYear();
-        var now_month = date_obj.getMonth() + 1;
-        var now_date = date_obj.getDate();
-    }
+    const NOW_YEAR = (time_zone == 'UTC') ? date_obj.getUTCFullYear() : date_obj.getFullYear();
+    var now_month = (time_zone == 'UTC') ? date_obj.getUTCMonth()+1 : date_obj.getMonth()+1;
+    var now_date = (time_zone == 'UTC') ? date_obj.getUTCDate() : date_obj.getDate();
     if (padded) {
         now_month = ('0' + now_month).slice(-2);
         now_date = ('0' + now_date).slice(-2);
     }
-    var now_full_date = now_year + divider + now_month + divider + now_date;
+    var now_full_date = NOW_YEAR + divider + now_month + divider + now_date;
     return now_full_date;
 }
 
@@ -143,15 +137,9 @@ function FORMAT_TIME(date_obj, time_zone, divider, padded) {
     time_zone = (time_zone === undefined) ? 'UTC' : time_zone;
     divider = (divider === undefined) ? ':' : divider;
     padded = (padded === undefined) ? true : padded;
-    if (time_zone == 'UTC') {
-        var now_hours = date_obj.getUTCHours();
-        var now_minutes = date_obj.getUTCMinutes() + 1;
-        var now_seconds = date_obj.getUTCSeconds();
-    } else {
-        var now_hours = date_obj.getHours();
-        var now_minutes = date_obj.getMinutes() + 1;
-        var now_seconds = date_obj.getSeconds();
-    }
+    var now_hours = (time_zone == 'UTC') ? date_obj.getUTCHours() : date_obj.getHours();
+    var now_minutes = (time_zone == 'UTC') ? date_obj.getUTCMinutes() : date_obj.getMinutes();
+    var now_seconds = (time_zone == 'UTC') ? date_obj.getUTCSeconds() : date_obj.getSeconds();
     if (padded) {
         now_hours = ('0' + now_hours).slice(-2);
         now_minutes = ('0' + now_minutes).slice(-2);
@@ -213,11 +201,11 @@ function LOAD_SOUNDS(index, stim_path, sound_list, after_func) {
                 }
             }
         }
-    };
+    }
 
     var start_time = Date.now();
     var reload_num = 0;
-    var check_loading = window.setInterval(check_state, 20); // update progress every intervalD ms
+    var check_loading = window.setInterval(CHECK_STATE, 20); // update progress every intervalD ms
 }
 
 function TO_RADIANS(degrees) {
@@ -251,8 +239,8 @@ function CHECK_IF_RESPONDED(open_ended_list, choice_list) {
     for (var i in open_ended_list) {
         all_responded = all_responded && (open_ended_list[i].replace(/(?:\r\n|\r|\n|\s)/g, '') != '');
     }
-    for (var i in choice_list) {
-        all_responded = all_responded && (typeof choice_list[i] != 'undefined');
+    for (var j in choice_list) {
+        all_responded = all_responded && (typeof choice_list[j] !== 'undefined');
     }
     return all_responded;
 }
@@ -277,4 +265,17 @@ function CHECK_FULLY_IN_VIEW(el) {
     var h = $(window).height();
     var is_visible = (top >= 0) && (bottom <= h) && (left >= 0) && (right <= w);
     return is_visible;
+}
+
+function CAPITALIZE(s) {
+    if (typeof s !== 'string'){
+        return '';
+    } else {
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+}
+
+function CREATE_RANDOM_REPEAT_BEGINNING_LIST(stim_list, repeat_trial_n) {
+    const REPEAT_LIST = SHUFFLE_ARRAY(stim_list.slice()).splice(0, repeat_trial_n);
+    return REPEAT_LIST.concat(stim_list);
 }

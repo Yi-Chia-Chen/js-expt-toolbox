@@ -2,6 +2,15 @@
 This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 
 ## Version History
+- 3.0.0 (2020.05.18): Add tab switching detection,
+                      Add rest (untested),
+                      Add instruction reading time recording,
+                      Add visit recording besides attrition recording,
+                      Add CAPITALIZE() to func.js,
+                      Delete ID recording for privacy reasons,
+                      Update the example experiment to include space key detection, hCaptcha, directory/file creation, and sona credit granting,
+                      Clean up syntax
+    - Used in Autistic Traits & Aesthetic Taste
 - 2.0.1 (2020.04.09): Fix a bug
 - 2.0.0 (2020.04.06): Add a progress indicator,
                       Add detection for elements in full view,
@@ -9,7 +18,7 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
                       Separate obtain subject ID into its own method,
                       Add subj.obtainCondition(),
                       Add an example experiment,
-                      fixed some formatting (but not all...)
+                      Fixed some formatting (but not all...)
     - Used in Aesthetic Versus Attractiveness
 - 1.1.0 (2020.01.20): Renamed the files and fixed formatting style
     - Used in Future Bias Ball on Hill
@@ -25,11 +34,7 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 ## Planned Improvements
 
 ### Features
-- "Press space bar to continue" to limit access from phones
-- Listen to tab switching and add instructions about it
 - End the experiment if people refresh after a certain point in formal experiment
-- Add rest (to let them know how much they've completed)
-- Show alert with a customized floating div in the center that dim everything else
 
 ### Cleaning up
 - Make all functions do one thing only

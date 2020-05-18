@@ -1,5 +1,9 @@
 <?php
-  $dataFile = fopen($_POST['id'] . ".txt", 'a');
-  fwrite($dataFile, $_POST['curData']); // append data from the subject
-  fclose($dataFile);
+    $path = $_POST['directory_path'];
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
+    }
+    $dataFile = fopen($_POST['directory_path'] . '/' . $_POST['file_name'], 'a');
+    fwrite($dataFile, $_POST['data']);
+    fclose($dataFile);
 ?>
