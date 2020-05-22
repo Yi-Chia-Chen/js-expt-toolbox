@@ -114,7 +114,6 @@ function RANGE(start_num, end_num, interval) {
     return list;
 }
 
-// formatting date object into date string
 function FORMAT_DATE(date_obj, time_zone, divider, padded) {
     date_obj = (date_obj === undefined) ? new Date() : date_obj;
     time_zone = (time_zone === undefined) ? 'UTC' : time_zone;
@@ -131,7 +130,6 @@ function FORMAT_DATE(date_obj, time_zone, divider, padded) {
     return now_full_date;
 }
 
-// formatting date object into 24-hour format time string
 function FORMAT_TIME(date_obj, time_zone, divider, padded) {
     date_obj = (date_obj === undefined) ? new Date() : date_obj;
     time_zone = (time_zone === undefined) ? 'UTC' : time_zone;
@@ -149,7 +147,6 @@ function FORMAT_TIME(date_obj, time_zone, divider, padded) {
     return now_full_time;
 }
 
-// preloading images
 function LOAD_IMG(index, stim_path, img_list, after_func) {
     after_func = (after_func === undefined) ? function() { return; } : after_func;
     if (index >= img_list.length) {
@@ -166,7 +163,6 @@ function LOAD_IMG(index, stim_path, img_list, after_func) {
     image.src = stim_path + img_list[index];
 }
 
-// preloading audio files
 function LOAD_SOUNDS(index, stim_path, sound_list, after_func) {
     if (index >= sound_list.length) {
         return;
@@ -206,6 +202,23 @@ function LOAD_SOUNDS(index, stim_path, sound_list, after_func) {
     var start_time = Date.now();
     var reload_num = 0;
     var check_loading = window.setInterval(CHECK_STATE, 20); // update progress every intervalD ms
+}
+
+function BUFFER_VIDEO(buffer_element, filename, error_func, after_func) {
+    error_func = (error_func === undefined) ? function() { return; } : error_func;
+    after_func = (after_func === undefined) ? function() { return; } : after_func;
+    var req = new XMLHttpRequest();
+    req.open('GET', filename, true);
+    req.responseType = 'blob';
+    req.onload = function() {
+        if (this.status === 200) {
+            var video_blob = this.response;
+            var video = URL.createObjectURL(video_blob);
+            buffer_element.src = video;
+        }
+    };
+    req.onerror = error_func;
+    req.send();
 }
 
 function TO_RADIANS(degrees) {

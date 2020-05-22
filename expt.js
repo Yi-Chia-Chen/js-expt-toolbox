@@ -221,6 +221,8 @@ class trialObject {
     }
 
     run() {
+        var that = this;
+
         if (this.progressInfo) {
             this.progress = Math.round( 100 * (this.trialNum+this.pracTrialN) / (this.trialN+this.pracTrialN) );
         }
@@ -229,7 +231,6 @@ class trialObject {
         const LAST = FORMAL ? this.trialNum == this.trialN : this.trialNum == 0;
         this.thisTrial = FORMAL ? this.trialList.pop() : this.pracList.pop();
 
-        var that = this;
         function findNextTrial(last, formal) {
             if (last){
                 return false
@@ -241,7 +242,6 @@ class trialObject {
 
         this.updateFunc(FORMAL, LAST, this.thisTrial, NEXT_TRIAL, this.stimPath);
 
-        var that = this;
         const START_STIM = function() {
             that.trialFunc();
             that.startTime = Date.now();

@@ -2,6 +2,9 @@
 This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 
 ## Version History
+- 3.1.0 (2020.05.22): Add buffer video function to func.js,
+                      Delete redundant code in expt.js
+    - Used in Aesthetics & Animacy
 - 3.0.0 (2020.05.18): Add tab switching detection,
                       Add rest (untested),
                       Add instruction reading time recording,
@@ -35,7 +38,9 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 
 ### Features
 - End the experiment if people refresh after a certain point in formal experiment
+- Add method to restart a block
 
 ### Cleaning up
+- Rename all variables according to style guidelines
 - Make all functions do one thing only
 - Write unit tests
