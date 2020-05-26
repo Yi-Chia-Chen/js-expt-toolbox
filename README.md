@@ -1,5 +1,6 @@
 # js-expt-toolbox
 This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
+You may find more resource I collected for online experiment here: https://ycc.vision/Resource/
 
 ## Version History
 - 3.1.0 (2020.05.22): Add buffer video function to func.js,
@@ -44,3 +45,5 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 - Rename all variables according to style guidelines
 - Make all functions do one thing only
 - Write unit tests
+- Use button tag for buttons
+- Comply to HTML 5 standard
