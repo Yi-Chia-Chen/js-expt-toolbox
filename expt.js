@@ -273,7 +273,12 @@ class trialObject {
             if (e.which == 32) {
                 $(document).off('keyup');
                 box_element.hide();
-                callback(callback_parameters);
+                if (typeof callback_parameters == 'undefined') {
+                    callback();
+                }
+                else {
+                    callback(callback_parameters);
+                }
             }
         });
     }
