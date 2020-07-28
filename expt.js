@@ -320,7 +320,7 @@ class instrObject {
         for (var i=0;i<this.qConditions.length;i++){
             this.qAttemptN[this.qConditions[i]] = 1;
         }
-        this.readingTimes = [];
+        this.readingTimes = {};
     }
 
     start(textBox = $('#instrBox'), textElement = $('#instrText')) {
@@ -333,7 +333,15 @@ class instrObject {
     }
 
     next(textElement = $('#instrText')) {
-        this.readingTimes.push((Date.now() - this.startTime)/1000);
+        var readingTime = (Date.now() - this.startTime)/1000;
+        if (typeof(this.readingTimes[this.index])=='undefined'){
+            this.readingTimes[this.index] = readingTime;
+        }
+        else{
+            if (this.readingTimes[this.index] < readingTime){
+                this.readingTimes[this.index] = readingTime;
+            }
+        }
         this.index += 1;
         if (this.index < this.text.length) {
             textElement.html(this.text[this.index]);

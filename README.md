@@ -3,7 +3,9 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 You may find more resource I collected for online experiment here: https://ycc.vision/Resource/
 
 ## Version History
-- 3.1.1 (2020.06.01): rest method updated and tested
+- 3.1.2 (2020.07.28): Change how instructions reading time is saved
+    - Used in Autistic Traits & Aesthetic Taste (big sample)
+- 3.1.1 (2020.06.01): Rest method updated and tested
     - Used in Aesthetic Taste in Biological Motion
 - 3.1.0 (2020.05.22): Add buffer video function to func.js,
                       Delete redundant code in expt.js
