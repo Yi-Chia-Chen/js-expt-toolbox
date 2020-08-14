@@ -3,6 +3,8 @@ This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 You may find more resource I collected for online experiment here: https://ycc.vision/Resource/
 
 ## Version History
+- 3.1.3 (2020.08.12): clean up the reading time code
+    - Used in Social Distancing Intervention
 - 3.1.2 (2020.07.28): Change how instructions reading time is saved
     - Used in Autistic Traits & Aesthetic Taste (big sample)
 - 3.1.1 (2020.06.01): Rest method updated and tested
