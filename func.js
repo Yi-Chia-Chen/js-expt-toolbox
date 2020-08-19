@@ -233,8 +233,16 @@ function REPEAT_ELEMENTS_IN_ARRAY(arr, repeat_n) {
     var new_arr = [];
     for (var i = 0; i < arr.length; i++) {
         for (var j = 0; j < repeat_n; j++) {
-            new_arr.push(Array.from(arr[i]));
+            new_arr.push(arr[i]);
         }
+    }
+    return new_arr;
+}
+
+function CONCAT_DUPLICATED_ARRAY(arr, repeat_n) {
+    var new_arr = [];
+    for (var i = 0; i < repeat_n; i++) {
+        new_arr = new_arr.concat(arr.slice());
     }
     return new_arr;
 }
