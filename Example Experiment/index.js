@@ -10,48 +10,39 @@
 // ######## ##     ## ##           ##
 
 const FORMAL = false;
-const EXPERIMENT_NAME = 'Example';
+const EXPERIMENT_NAME = 'distInterv';
 const SUBJ_NUM_FILE = 'subjNum_' + EXPERIMENT_NAME + '.txt';
-const TRIAL_FILE = 'trial_' + EXPERIMENT_NAME + '.txt';
+const RATING_FILE = 'rating_' + EXPERIMENT_NAME + '.txt';
 const SUBJ_FILE = 'subj_' + EXPERIMENT_NAME + '.txt';
 const VISIT_FILE = 'visit_' + EXPERIMENT_NAME + '.txt';
 const ATTRITION_FILE = 'attrition_' + EXPERIMENT_NAME + '.txt';
+const PLEDGE_FILE = 'pledge_' + EXPERIMENT_NAME + '.txt';
 const SAVING_SCRIPT = 'save.php';
 const SAVING_DIR = FORMAL ? 'data/formal':'data/testing';
-
-const BLOCK_N = 1;
+const ID_GET_VARIABLE_NAME = 'PROLIFIC_PID';
+const FREE_PASS_ID = '1234'; // this is used for testing so this id will always have future access regardless of pledge responses
 
 const VIEWPORT_MIN_W = 800;
 const VIEWPORT_MIN_H = 600;
 
-const INSTR_READING_TIME_MIN = 2;
+const INSTR_READING_TIME_MIN = 0.5;
 
-// trial variables
-const PRACTICE_LIST = ['prac.jpg'];
-const PRACTICE_TRIAL_N = PRACTICE_LIST.length;
-const REPEAT_TRIAL_N = 1;
-const STIM_N = 2;
 const STIM_PATH = 'Stimuli/';
-const NAME_LIST = SHUFFLE_ARRAY(['101','188']);
-const STIM_LIST = NAME_LIST.map(x => x+'.jpg');
 
-var repeat_list = STIM_LIST.slice();
-const TRIAL_LIST = CREATE_RANDOM_REPEAT_BEGINNING_LIST(STIM_LIST, REPEAT_TRIAL_N);
-const TRIAL_N = TRIAL_LIST.length;
-const INSTR_TRIAL_N = PRACTICE_TRIAL_N + TRIAL_N;
+// Rating
+const RATING_PRACTICE_LIST = ['prac.jpg'];
+const RATING_PRACTICE_TRIAL_N = RATING_PRACTICE_LIST.length;
+const RATING_IMG_LIST = SHUFFLE_ARRAY([
+    'eating_alone.jpg', 'eating_group.jpg',
+    'working_alone.jpg', 'working_group.jpg',
+    'interviewing_alone.jpg', 'interviewing_group.jpg'
+]);
+const RATING_TRIAL_N = RATING_IMG_LIST.length;
+const RATING_INSTR_TRIAL_N = RATING_PRACTICE_TRIAL_N + RATING_TRIAL_N;
+const INTERTRIAL_INTERVAL = 0.5;
 
-// AQ variables
-const AQ_QUESTION_DICT = {
-    1: 'Statement 1',
-    2: 'Statement 2'
-}
-const AQ_LENGTH = Object.keys(AQ_QUESTION_DICT).length;
-
-// duration variables (in seconds)
-var INTERTRIAL_INTERVAL = 0.5;
-
-// object variables
-var instr, subj, trial;
+// Object variables
+var instr, subj, rating;
 
 
 // ########  ########    ###    ########  ##    ##
@@ -64,10 +55,10 @@ var instr, subj, trial;
 
 $(document).ready(function() {
     subj = new subjObject(subj_options); // getting subject number
-    subj.id = subj.getID('sonacode');
+    subj.id = subj.getID(ID_GET_VARIABLE_NAME);
     subj.saveVisit();
-    if (subj.phone) { // asking for subj.phone will detect phone
-        $('#instrText').html('It seems that you are using a touchscreen device or a phone. Please use a laptop or desktop instead.<br /><br />If you believe you have received this message in error, please contact the experimenter at experimenter@domain.edu<br /><br />Otherwise, please switch to a laptop or a desktop computer for this experiment.');
+    if (subj.phone) {
+        $('#instrText').html('It seems that you are using a touchscreen device or a phone. Please use a laptop or desktop instead.<br /><br />If you believe you have received this message in error, please contact the experimenter at yichiachen@ucla.edu<br /><br />Otherwise, please switch to a laptop or a desktop computer for this experiment.');
         $('#nextButton').hide();
         $('#instrBox').show();
     } else if (subj.id !== null){
@@ -96,9 +87,6 @@ const SUBJ_TITLES = ['num',
                      'quickReadingPageN',
                      'hiddenCount',
                      'hiddenDurations',
-                     'daily',
-                     'typicality',
-                     'aqResponses',
                      'serious',
                      'problems',
                      'gender',
@@ -109,7 +97,7 @@ const SUBJ_TITLES = ['num',
                     ];
 
 function INVALID_ID_FUNC() {
-    $('#instrText').html("We can't identify a valid code from subject pool website. Please reopen the study from the subject pool website again. Thank you!");
+    $('#instrText').html("We can't identify a valid Prolific ID. Please reopen the study from the Prolific website again. Thank you!");
     $('#nextButton').hide();
     $('#instrBox').show();
 }
@@ -119,23 +107,69 @@ function HCAPTCHA_SUBMIT() {
     function CAPTCHA_RESULTS(results) {
         if (results == 'passed') {
             $('#captchaBox').hide();
-            instr = new instrObject(instr_options);
-            instr.start();
-            trial_options['subj'] = subj;
-            trial = new trialObject(trial_options);
+            SEARCH_PLEDGE();
         } else {
             $('#captchaBox').hide();
-            $('#instrText').html('Oops! An error has occurred. Please contact the experiment experimenter@domain.edu with the code "CAPTCHA_ERR". Sorry!');
+            $('#instrText').html('Oops! An error has occurred. Please contact the experiment yichiachen@ucle.edu with the code "CAPTCHA_ERR". Sorry!');
             $('#nextButton').hide();
             $('#instrBox').show();
         }
     }
-    function CAPTCHA_AJAX_FAILED() {
-        $('#instrText').html('Oops! An error has occurred. Please contact the experiment experimenter@domain.edu with the code "CAPTCHA_AJAX_ERR". Sorry!');
+    POST_DATA('hCaptcha_verification.php', { 'hCaptcha_token': HCAPTCHA_RESPONSE }, CAPTCHA_RESULTS, AJAX_FAILED);
+}
+
+function AJAX_FAILED() {
+    $('.pageBox').hide();
+    $('#instrText').html('Oops! An error has occurred. Please contact the experiment yichiachen@ucle.edu with the code "CAPTCHA_AJAX_ERR". Sorry!');
+    $('#nextButton').hide();
+    $('#instrBox').show();
+}
+
+function SUBMIT_PLEDGE_Q() {
+    var pledge_response = $('input[name=pledge]:checked').val();
+    var responded = CHECK_IF_RESPONDED([], [pledge_response]);
+    if (responded) {
+        $('#pledgeBox').hide();
+        if (pledge_response == 1){
+            ACCEPT_PLEDGE()
+        } else {
+            REFUSE_PLEDGE();
+        }
+    } else {
+        $('#pledgeQWarning').text('Please answer the question to start the experiment. Thank you!');
+    }
+}
+
+function SEARCH_PLEDGE() {
+    if (subj.id == FREE_PASS_ID) {
+        $('#pledgeBox').show();
+    } else {
+        POST_DATA('pledge_check.php', { 'directory_path': SAVING_DIR, 'file_name': PLEDGE_FILE, 'worker_id': subj.id}, CHECK_PLEDGE, AJAX_FAILED);
+    }
+}
+
+function CHECK_PLEDGE(found) {
+    if (found == '0') {
+        $('#pledgeBox').show();
+    } else {
+        $('#instrText').html('It seems that you have reported that you will not read the instructions carefully before. In that case, you will not be fully informed and thus we are not allowed to let you participate because of the ethical concerns.<br /><br />If you believe you have received this message in error, please contact the experimenter at yichiachen@ucla.edu. Otherwise, please return the HIT.');
         $('#nextButton').hide();
         $('#instrBox').show();
     }
-    POST_DATA('hCaptcha_verification.php', { 'hCaptcha_token': HCAPTCHA_RESPONSE }, CAPTCHA_RESULTS, CAPTCHA_AJAX_FAILED);
+}
+
+function ACCEPT_PLEDGE() {
+    instr = new instrObject(instr_options);
+    instr.start();
+    rating_options['subj'] = subj;
+    rating = new trialObject(rating_options);
+}
+
+function REFUSE_PLEDGE() {
+    POST_DATA('pledge_record.php', { 'directory_path': SAVING_DIR, 'file_name': PLEDGE_FILE, 'worker_id': subj.id});
+    $('#instrText').html('It seems that you have reported that you will not read the instructions carefully. In that case, you will not be fully informed and thus we are not allowed to let you participate because of the ethical concerns.<br /><br /> We are sorry that we have to ask you to return the HIT.');
+    $('#nextButton').hide();
+    $('#instrBox').show();
 }
 
 function HANDLE_VISIBILITY_CHANGE() {
@@ -147,72 +181,42 @@ function HANDLE_VISIBILITY_CHANGE() {
     }
 }
 
-function SUBMIT_LIKERT_Q() {
-    subj.daily = $('input[name=daily]:checked').val();
-    subj.typicality = $('input[name=typicality]:checked').val();
-    var all_responded = CHECK_IF_RESPONDED([], [subj.daily, subj.typicality]);
-    if (all_responded) {
-        $('#likertBox').hide();
-        $('#aqBox').show();
-        $(document).keyup(function(e) {
-            if (e.which == 32) { // the 'space' key
-                $(document).off('keyup');
-                START_AQ();
-            }
-        });
-    } else {
-        $('#LikertWarning').text('Please answer all questions to complete the first part. Thank you!');
-    }
-}
-
-function START_AQ() {
-    $('#aqInstrText').hide();
-    subj.aqResponses  = {};
-    subj.aqNowQ = 1;
-    $('#aqQ').text(AQ_QUESTION_DICT[1]);
-    $('#aqContainer').show();
-    AQ_RESPONSE();
-}
-
-function AQ_RESPONSE() {
-    $('.aqButton').mouseup(function(event) {
-        $('.aqButton').unbind('mouseup');
-        subj.aqResponses[subj.aqNowQ] = event.target.id;
-        if (subj.aqNowQ == AQ_LENGTH){
-            $('#aqBox').hide();
-            $('#questionsBox').show();
-            subj.detectVisibilityEnd();
-        } else {
-            subj.aqNowQ += 1;
-            $('#aqQ').text(AQ_QUESTION_DICT[subj.aqNowQ]);
-            $('#aqProgress').text( Math.round(100 * subj.aqNowQ / (AQ_LENGTH+2)) );
-            AQ_RESPONSE();
-        }
-    });
-}
-
 function SUBMIT_DEBRIEFING_Q() {
     subj.serious = $('input[name=serious]:checked').val();
     subj.problems = $('#problems').val();
     subj.gender = $('input[name=gender]:checked').val();
     subj.age = $('#age').val();
-    var open_ended_list = [subj.problems, subj.age];
-    var all_responded = CHECK_IF_RESPONDED(open_ended_list, [subj.daily, subj.typicality]);
+    var open_ended_list = [subj.age];
+    var choice_list = [subj.serious, subj.gender];
+    var all_responded = CHECK_IF_RESPONDED(open_ended_list, choice_list);
     if (all_responded) {
         for (var i = 0; i < open_ended_list.length; i++) {
             open_ended_list[i] = open_ended_list[i].replace(/(?:\r\n|\r|\n)/g, '<br />');
         }
         subj.instrQAttemptN = instr.qAttemptN['onlyQ'];
-        subj.instrReadingTimes = instr.readingTimes;
-        subj.quickReadingPageN = subj.instrReadingTimes.filter(d => d < INSTR_READING_TIME_MIN).length;
-        subj.aqResponses = JSON.stringify(subj.aqResponses);
+        subj.instrReadingTimes = JSON.stringify(instr.readingTimes);
+        subj.quickReadingPageN = Object.values(instr.readingTimes).filter(d => d < INSTR_READING_TIME_MIN).length;
         subj.submitQ();
         $('#questionsBox').hide();
+        ALLOW_SELECTION();
         $('#debriefingBox').show();
         $('html')[0].scrollIntoView();
     } else {
-        $('#Qwarning').text('Please answer all questions to complete the experiment. Thank you!');
+        $('#QWarning').text('Please rate your agreement for all statements to complete the experiment. Thank you!');
     }
+}
+
+function END_TO_PROLIFIC() {
+    window.location.href = 'https://app.prolific.co/submissions/complete?cc=XXX'; // link provided by Prolific
+}
+
+function ALLOW_SELECTION() {
+    $('body').css({
+        '-webkit-user-select':'text',
+        '-moz-user-select':'text',
+        '-ms-user-select':'text',
+        'user-select':'text'
+    });
 }
 
 var subj_options = {
@@ -239,31 +243,19 @@ var subj_options = {
 // #### ##    ##  ######     ##    ##     ##
 
 var instr_text = new Array;
-instr_text[0] = "Welcome, fellow human!<br /><br />Do you sometimes notice what people consider as beautiful can be very different? This study is about that!<br /><br />We are a bunch of scientists fascinated by the human aesthetic experience, and we want to learn how people's taste differ.";
-instr_text[1] = "Your contributions may help in making AI, analyzing art, and designing things around us in everyday life!<br /><br />And, most importantly, we hope this is fun for you, too!";
-instr_text[2] = 'Please help us by reading the instructions in the next few pages carefully, and avoid using the refresh or back buttons.';
-instr_text[3] = 'Now, please maximize your browser window.';
-instr_text[4] = 'This study takes about 30 minutes, and there are 2 parts, with each taking about 15 minutes.';
-instr_text[5] = "Here's what your job is in the first part: you will be shown " + INSTR_TRIAL_N + ' images, one at a time. Here is an example:';
-instr_text[6] = 'We are interested in how <strong>visually pleasing</strong> you find each image to be.<br /><br />In other words, how good/beautiful do you think the image looks?';
-instr_text[7] = 'Six options will be available below the images as six buttons (as in below). Just click one of the options based on your preference.';
-instr_text[8] = 'You might sometimes find that you like an image because of its meaning or the subject it depicts (e.g. that it contains a cat, if you like cats) — but what we are really asking about is just how <strong>visually</strong> pleasing you think it is.<br /><br />(As a result, an image of a cat could nevertheless look dull to you even if you like cats.)<br /><br />';
-instr_text[9] = 'Please try your best NOT to consider the meaning of the images, and just to evaluate how visually pleasing each one is.';
-instr_text[10] = "The next page is a quick instruction quiz. (It's very simple!)";
-instr_text[11] = ''; // instruction question 1
-instr_text[12] = "Great! You can press SPACE to start. Please focus after you start (Don't switch to other windows or tabs!)";
+instr_text[0] = 'Thank you very much!<br /><br />This study will take about 10 minutes. Please read the instructions carefully, and avoid using the refresh or back buttons.';
+instr_text[1] = 'Now, please maximize your browser window.';
+instr_text[2] = 'In this study, we will show you '+RATING_INSTR_TRIAL_N+' images, one at a time. We are interested in how positive you feel looking at each image.';
+instr_text[3] = 'Six options will be available below the images as six buttons. Just click one of the options based on your experience.';
+instr_text[4] = "The next page is a quick instruction quiz. (It's very simple!)";
+instr_text[5] = ''; // instruction question 1
+instr_text[6] = "Great! You can press SPACE to start. Please focus after you start (Don't switch to other windows or tabs!)";
 
 const INSTR_FUNC_DICT = {
-    0: SHOW_TASTE_IMG,
-    1: HIDE_INSTR_IMG,
-    3: SHOW_MAXIMIZE_WINDOW,
-    4: HIDE_INSTR_IMG,
-    5: SHOW_EXAMPLE_IMG,
-    6: HIDE_INSTR_IMG,
-    7: SHOW_RATING_BUTTONS,
-    8: HIDE_RATING_BUTTONS,
-    11: SHOW_INSTR_QUESTION,
-    12: SHOW_CONSENT
+    1: SHOW_MAXIMIZE_WINDOW,
+    2: HIDE_INSTR_IMG,
+    5: SHOW_INSTR_QUESTION,
+    6: SHOW_CONSENT
 };
 
 function SHOW_INSTR_IMG(file_name) {
@@ -275,24 +267,8 @@ function HIDE_INSTR_IMG() {
     $('#instrImg').css('display', 'none');
 }
 
-function SHOW_TASTE_IMG() {
-    SHOW_INSTR_IMG('instr_taste.jpg');
-}
-
 function SHOW_MAXIMIZE_WINDOW() {
     SHOW_INSTR_IMG('maximize_window.png');
-}
-
-function SHOW_EXAMPLE_IMG() {
-    SHOW_INSTR_IMG('prac.jpg');
-}
-
-function SHOW_RATING_BUTTONS() {
-    $('#ratingExample').show();
-}
-
-function HIDE_RATING_BUTTONS() {
-    $('#ratingExample').hide();
 }
 
 function SHOW_INSTR_QUESTION() {
@@ -304,14 +280,16 @@ function SUBMIT_INSTR_Q() {
     var instrChoice = $('input[name="instrQ"]:checked').val();
     if (typeof instrChoice === 'undefined') {
         $('#instrQWarning').text('Please answer the question. Thank you!');
-    } else if (instrChoice != 'aesthetics') {
+    } else if (instrChoice != 'option1') {
         instr.qAttemptN['onlyQ'] += 1;
+        instr.saveReadingTime();
         $('#instrText').html('You have given an incorrect answer. Please read the instructions again carefully.');
         $('#instrBox').show();
         $('#instrQBox').hide();
         $('input[name="instrQ"]:checked').prop('checked', false);
         instr.index = -1;
     } else {
+        instr.saveReadingTime();
         instr.next();
         $('#instrQBox').hide();
         $('#instrBox').show();
@@ -321,16 +299,15 @@ function SUBMIT_INSTR_Q() {
 function SHOW_CONSENT() {
     $('#nextButton').hide();
     $('#consentBox').show();
-    $('#instrBox').attr('id', 'instrBoxScroll');
-    $('#instrBoxScroll').show();
+    $('#instrBox').show();
     $(document).keyup(function(e) {
         if (e.which == 32) { // the 'space' key
             $(document).off('keyup');
-            $('#instrBoxScroll').attr('id', 'instrBox');
+            instr.saveReadingTime();
             $('#instrBox').hide();
             $('#consentBox').hide();
             subj.saveAttrition();
-            SHOW_BLOCK();
+            SHOW_RATING();
         }
     });
 }
@@ -350,7 +327,7 @@ var instr_options = {
 //    ##    ##    ##   ##  ##     ## ##
 //    ##    ##     ## #### ##     ## ########
 
-const TRIAL_TITLES = [
+const RATING_TITLES = [
     'num',
     'date',
     'subjStartTime',
@@ -358,59 +335,53 @@ const TRIAL_TITLES = [
     'stimName',
     'inView',
     'response',
-    'rt'];
+    'rt'
+];
 
-function SHOW_BLOCK() {
-    $('#instrBox').hide();
+function SHOW_RATING() {
     $('#trialBox').show();
-    subj.detectVisibilityStart();
-    trial.run();
+    rating.run();
 }
 
-function TRIAL_UPDATE(formal_trial, last, this_trial, next_trial, path) {
-    trial.stimName = this_trial;
-    $('#progress').text(trial.progress);
+function RATING_UPDATE(formal_trial, last, this_trial, next_trial, path) {
+    rating.stimName = this_trial;
+    $('#trialProgress').text(rating.progress);
     $('#testImg').attr('src', path + this_trial);
     if (!last) {
         $('#bufferImg').attr('src', path + next_trial);
     }
 }
 
-function TRIAL() {
+function RATING() {
     $('#testImg').show();
-    $('.aesButton').mouseup(function(event) {
-        $('.aesButton').unbind('mouseup');
-        trial.inView = CHECK_FULLY_IN_VIEW($('#testImg'));
+    $('.ratingButton').mouseup(function(event) {
+        $('.ratingButton').unbind('mouseup');
+        rating.inView = CHECK_FULLY_IN_VIEW($('#testImg'));
         $('#testImg').hide();
-        trial.end(event.target.id);
+        var target = $(event.target).closest('.ratingButton');
+        rating.end(target.attr('id'));
     });
 }
 
-function END_EXPT() {
+function END_RATING() {
     $('#trialBox').hide();
-    $('#likertBox').show();
-    trial.save();
+    $('#questionsBox').show();
+    rating.save();
 }
 
-function END_TO_SONA() {
-    const COMPLETION_URL = /*automatically generated url XXX */ + subj.id;
-    window.location.href = COMPLETION_URL;
-}
-
-var trial_options = {
-    subj: 'pre-define', // assign after subj is created
-    pracTrialN: PRACTICE_TRIAL_N,
-    trialN: TRIAL_N,
-    titles: TRIAL_TITLES,
+var rating_options = {
+    titles: RATING_TITLES,
+    pracTrialN: RATING_PRACTICE_TRIAL_N,
+    trialN: RATING_TRIAL_N,
     stimPath: STIM_PATH,
-    dataFile: TRIAL_FILE,
+    dataFile: RATING_FILE,
     savingScript: SAVING_SCRIPT,
     savingDir: SAVING_DIR,
-    trialList: TRIAL_LIST,
-    pracList: PRACTICE_LIST,
+    trialList: RATING_IMG_LIST,
+    pracList: RATING_PRACTICE_LIST,
     intertrialInterval: INTERTRIAL_INTERVAL,
-    updateFunc: TRIAL_UPDATE,
-    trialFunc: TRIAL,
-    endExptFunc: END_EXPT,
+    updateFunc: RATING_UPDATE,
+    trialFunc: RATING,
+    endExptFunc: END_RATING,
     progressInfo: true
 }

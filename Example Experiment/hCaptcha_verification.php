@@ -1,6 +1,7 @@
 <?php
+    header('Content-Type: text/plain');
     $DATA = [
-        'secret'=> 'XXX', // enter your secret token here from your hCaptcha account
+        'secret'=> '0x172C2Eb985E2ba0E2930fA1210D03a691205C7aA',
         'response'=> $_POST['hCaptcha_token']
     ];
 

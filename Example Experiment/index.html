@@ -17,27 +17,30 @@
     <!--======== hCaptcha ========-->
     <div class='pageBox' id='captchaBox'>
         <p class='captchaText'>Just making sure no robot is participating......</p>
-        <div class='h-captcha' data-sitekey='your-data-sitekey-from-your-hCaptcha-account' data-theme='dark' data-callback='HCAPTCHA_SUBMIT'></div>
+        <div class='h-captcha' data-sitekey='9acad66a-3ceb-4e59-9e6b-716fc867dadb' data-theme='dark' data-callback='HCAPTCHA_SUBMIT'></div>
+    </div>
+
+    <!--======== PLEDGE ========-->
+    <div class='pageBox' id='pledgeBox'>
+        <div class='boldText'>Will you read all the instructions carefully and treat the study seriously?</div>
+        <label><div class='option'><input class='optionRadio' type='radio' name='pledge' value='1' /><div class='optionText'>Yes.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='pledge' value='0' /><div class='optionText'>No.</div></div></label>
+        <div class='button' onclick='SUBMIT_PLEDGE_Q()'>SUBMIT</div>
+        <br />
+        <div class='warning' id='pledgeQWarning'></div>
+        <br />
     </div>
 
     <!--======== INSTRUCTIONS ========-->
     <div class='pageBox' id='instrBox'>
         <p id='instrText'></p>
-        <img id='instrImg' alt='Image Error: Please contact experimenter@domain.edu and include your sona ID and the code "IMG-ERROR" to receive your credit.'></img>
-        <div class='ratingContainer' id='ratingExample'>
-            <div class='ratingButton r6'><p class='ratingLabels'>Certainly<br />Pleasing</p></div>
-            <div class='ratingButton r5'><p class='ratingLabels'>Probably<br />Pleasing</p></div>
-            <div class='ratingButton r4'><p class='ratingLabels'>Guess<br />Pleasing</p></div>
-            <div class='ratingButton r3'><p class='ratingLabels'>Guess<br />Not Pleasing</p></div>
-            <div class='ratingButton r2'><p class='ratingLabels'>Probably<br />Not Pleasing</p></div>
-            <div class='ratingButton r1'><p class='ratingLabels'>Certainly<br />Not Pleasing</p></div>
-        </div>
+        <img id='instrImg' alt='Image Error: Please submit the HIT with the code "IMG-ERROR" to receive your payment.'></img>
         <div class='button' id='nextButton' onclick='instr.next()'>NEXT</div>
         <!--======== INFORMED CONSENT FORM ========-->
         <div class='pageBox' id='consentBox'>
             <div class='consentInstr'>To conduct this experiment, we need to include this information sheet:</div>
             <div id='consentTextBox'>
-                <strong>CONSENT FORM</strong><br />
+                <strong>CONSENT FORM</strong><br /><br />
                 Your consent form here.
             </div>
         </div>
@@ -45,103 +48,49 @@
 
     <!--======== INSTRUCTIONS QUIZ ========-->
     <div class='pageBox' id='instrQBox'>
-        <div class='boldText'>What is your job in this part of the experiment?</div>
+        <div class='boldText'>What is your job in this experiment?</div>
         <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='forgot' /><div class='optionText'>Select this option if you do not remember the instructions.</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='emotion' /><div class='optionText'>To rate how happy you feel looking at each image.</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='subject' /><div class='optionText'>To rate how much you like the subject of each image.</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='meaning' /><div class='optionText'>To rate how much you like the meaning of each image.</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='aesthetics' /><div class='optionText'>To rate how visually appealing each image looks to you.</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='option1' /><div class='optionText'>Option 1</div></div></label>
+        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='option2' /><div class='optionText'>Option 2</div></div></label>
         <div class='button' onclick='SUBMIT_INSTR_Q()'>SUBMIT</div>
         <br />
         <div class='warning' id='instrQWarning'></div>
         <br />
     </div>
 
-    <!--======== EXPERIMENT TRIAL ========-->
+    <!--======== TRIALS ========-->
     <div class='pageBox' id='trialBox'>
-        <div class='progressBar'><span id='progress'>0</span>% completed</div>
+        <div class='progressBar' id='trialProgressBar'><span id='trialProgress'>0</span>% completed</div>
         <div class='testImgPlaceHolder'>
-            <img id='testImg' src='Stimuli/blank.jpg' alt='' draggable='false'/>
+            <img id='testImg' src='Stimuli/blank.jpg' alt='Image Error: Please submit the HIT with the code "IMG-ERROR" to receive your payment.' draggable='false'/>
         </div>
-        <div id='bufferDiv' alt=''>
+        <div class='bufferDiv' alt=''>
             <img id='bufferImg' src='Stimuli/blank.jpg' alt='' />
         </div>
         <div id='ratingContainer' class='ratingContainer'>
-            <div class='ratingButton aesButton r6'><p class='ratingLabels' id='r6'>Certainly<br />Pleasing</p></div>
-            <div class='ratingButton aesButton r5'><p class='ratingLabels' id='r5'>Probably<br />Pleasing</p></div>
-            <div class='ratingButton aesButton r4'><p class='ratingLabels' id='r4'>Guess<br />Pleasing</p></div>
-            <div class='ratingButton aesButton r3'><p class='ratingLabels' id='r3'>Guess<br />Not Pleasing</p></div>
-            <div class='ratingButton aesButton r2'><p class='ratingLabels' id='r2'>Probably<br />Not Pleasing</p></div>
-            <div class='ratingButton aesButton r1'><p class='ratingLabels' id='r1'>Certainly<br />Not Pleasing</p></div>
+            <div class='ratingButton r6' id='r6'><p class='ratingLabels'>Certainly<br />Positive</p></div>
+            <div class='ratingButton r5' id='r5'><p class='ratingLabels'>Probably<br />Positive</p></div>
+            <div class='ratingButton r4' id='r4'><p class='ratingLabels'>Maybe<br />Positive</p></div>
+            <div class='ratingButton r3' id='r3'><p class='ratingLabels'>Maybe<br />Not Positive</p></div>
+            <div class='ratingButton r2' id='r2'><p class='ratingLabels'>Probably<br />Not Positive</p></div>
+            <div class='ratingButton r1' id='r1'><p class='ratingLabels'>Certainly<br />Not Positive</p></div>
         </div>
     </div>
 
-    <!--======== LIKERT SCALE QUESTIONS ========-->
-    <div class='pageBox' id='likertBox'>
-        After answering these two questions, the second part will start:<br /><br /><br />
-
-        <div class='boldText'>How often do you spontaneously notice how visually appealing (or unappealing) things are in your day-to-day life?</div>
-        <div class='likertWrap'>
-            <div class='likertLine'></div>
-            <div class='likert likertOptions'><label><input type='radio' name='daily' value='1' required /><p class='likertText'>1</p><p class='likertText'>very seldom</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='daily' value='2' required /><p class='likertText'>2</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='daily' value='3' required /><p class='likertText'>3</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='daily' value='4' required /><p class='likertText'>4</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='daily' value='5' required /><p class='likertText'>5</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='daily' value='6' required /><p class='likertText'>6</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='daily' value='7' required /><p class='likertText'>7</p><p class='likertText'>very often</p></label></div>
-        </div>
-
-        <br /><br /><br />
-
-        <div class='boldText'>In terms of judging visual appeal of objects and scenes, how similar do you think your visual preferences are compares to the majority?</div>
-        <div class='likertWrap'>
-            <div class='likertLine'></div>
-            <div class='likert likertOptions'><label><input type='radio' name='typicality' value='1' required /><p class='likertText'>1</p><p class='likertText'>very dissimilar</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='typicality' value='2' required /><p class='likertText'>2</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='typicality' value='3' required /><p class='likertText'>3</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='typicality' value='4' required /><p class='likertText'>4</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='typicality' value='5' required /><p class='likertText'>5</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='typicality' value='6' required /><p class='likertText'>6</p></label></div>
-            <div class='likert likertOptions'><label><input type='radio' name='typicality' value='7' required /><p class='likertText'>7</p><p class='likertText'>very similar</p></label></div>
-        </div>
-
-        <br /><br /><br />
-
-        <div class='button' onclick='SUBMIT_LIKERT_Q()'>SUBMIT</div>
-        <br />
-        <div class='warning' id='LikertWarning'></div>
-        <br />
-    </div>
-
-    <!--======== AQ QUESTION ========-->
-    <div class='pageBox' id='aqBox'>
-        <p id='aqInstrText'>You have completed the first part!<br /><br />In the second part, you will answer some questions. This will take about 2 minutes and likely shorter.<br /><br />Hit SPACE to start!</p>
-        <div id='aqContainer'>
-            <div class='progressBar' id='aqProgressBar'><span id='aqProgress'>0</span>% completed</div>
-            <div class='aqQ' id='aqQ'></div>
-            <div class='ratingContainer' id='aqOptionsContainer'>
-                <div class='ratingButton aqButton r2 aq4'><p class='ratingLabels' id='aq4'>Definitely<br />Disagree</p></div>
-                <div class='ratingButton aqButton r3 aq3'><p class='ratingLabels' id='aq3'>Slightly<br />Disagree</p></div>
-                <div class='ratingButton aqButton r4 aq2'><p class='ratingLabels' id='aq2'>Slightly<br />Agree</p></div>
-                <div class='ratingButton aqButton r5 aq1'><p class='ratingLabels' id='aq1'>Definitely<br />Agree</p></div>
-            </div>
-        </div>
-    </div>
 
     <!--======== DEBRIEFING QUESTION ========-->
     <div class='pageBox' id='questionsBox'>
-        You are almost done! Please answer these last questions:<br /><br /><br />
+        You are almost done! Now please answer these last 4 questions:<br /><br /><br />
 
         <div class='boldText'>Did you complete this experiment seriously throughout (without randomly responding)?</div>
-        <div class='smallDimText'>You will receive credit regardless what your answer is here. Please be honest for science! Thanks!</div>
+        <div class='smallDimText'>You will receive payment regardless of what your answer is here. Please be honest for science! Thanks!</div>
         <label><div class='option'><input class='optionRadio' type='radio' name='serious' value='0' /><div class='optionText'>No, I didn't.</div></div></label>
         <label><div class='option'><input class='optionRadio' type='radio' name='serious' value='1' /><div class='optionText'>Yes, I did.</div></div></label>
 
         <br /><br /><br />
 
-        <div class='boldText'> Was any part of the procedure unclear? Did you have any problems completing any of the tasks?</div>
-        <div class='smallDimText'>You will receive credit regardless what your answer is here. Please be honest for science! Thanks!</div>
+        <div class='boldText'>Was any part of the procedure unclear? Did you have any problems completing any of the tasks?</div>
+        <div class='smallDimText'>You will receive payment regardless of what your answer is here. Please be honest for science! Thanks!</div>
         <textarea id='problems' rows='3' cols='90'></textarea>
 
         <br /><br /><br />
@@ -161,20 +110,17 @@
 
         <div class='button' onclick='SUBMIT_DEBRIEFING_Q()'>SUBMIT</div>
         <br />
-        <div class='warning' id='Qwarning'></div>
+        <div class='warning' id='QWarning'></div>
         <br />
     </div>
 
     <!--======== DEBRIEFING ========-->
     <div class='pageBox' id='debriefingBox'>
-        You are done! Thank you very much! Whenever you are ready, click END to get credit.<br /><br />
-        Interested in what we are testing? See below for more information!<br /><br />
-        <div class='button' onclick='END_TO_SONA()'>END</div>
-
+        You have finished the experiment! Thank you very much!<br /><br /> Whenever you are ready, click END to submit your work. You may read the text below if you are interested in what we are studying.<br />
+        <div class='button' onclick='END_TO_PROLIFIC()'>END</div>
         <br /><br />
-
         <strong>Debriefing Sheet</strong><br />
-        Your debriefing here.
+        Your debriefing sheet here.
     </div>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.3/mobile-detect.min.js'></script>

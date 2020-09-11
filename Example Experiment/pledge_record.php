@@ -5,6 +5,6 @@
         mkdir($path, 0777, true);
     }
     $dataFile = fopen($_POST['directory_path'] . '/' . $_POST['file_name'], 'a');
-    fwrite($dataFile, $_POST['data']);
+    fwrite($dataFile, $_POST['worker_id'] . PHP_EOL);
     fclose($dataFile);
 ?>

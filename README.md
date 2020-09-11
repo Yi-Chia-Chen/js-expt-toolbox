@@ -1,10 +1,13 @@
 # js-expt-toolbox
 This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 You may find more resource I collected for online experiment here: https://ycc.vision/Resource/
+The example experiment can be viewed here: https://ycc.cvls.online/tools/example/?PROLIFIC_PID=1234
 
 ## Version History
+- 3.2.0 (2020.09.11): add TO_DEGREES in func.js, add new example experiment
+    - Used in Social Avoidance pilot
 - 3.1.4 (2020.08.19): fix a bug
-    - Used in Social Distancing Intervention Learning Pretest 2
+    - Used in Social Distancing Intervention Learning Pretest 2 and 3
 - 3.1.3 (2020.08.12): clean up the reading time code
     - Used in Social Distancing Intervention Learning Pretest 1
 - 3.1.2 (2020.07.28): Change how instructions reading time is saved
