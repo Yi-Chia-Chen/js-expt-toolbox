@@ -1,6 +1,6 @@
 // by Yi-Chia Chen
-// required func.js by Yi-Chia Chen
-// required mobile-detect.js by Heinrich Goebl
+// requires func.js by Yi-Chia Chen
+// requires mobile-detect.js by Heinrich Goebl
 
 
 //  ######  ##     ## ########        ## ########  ######  ########
@@ -20,8 +20,6 @@ class subjObject {
             condition: false,
             conditionList: [''],
             titles: [''],
-            invalidIDFunc: false,
-            validIDFunc: false,
             viewportMinW: 0,
             viewportMinH: 0,
             savingScript: 'save.php',
@@ -91,21 +89,17 @@ class subjObject {
 
     getID(get_variable) {
         var id = GET_PARAMETERS(get_variable, null);
-        var invalid_id = (id == null);
-        if (!invalid_id) {
+        var valid_id = (id !== null);
+        if (valid_id) {
             id = id.replace(/\s+/g, '');
-            invalid_id = (id == '');
+            valid_id = (id !== '');
         }
-        if (invalid_id) {
-            if (this.invalidIDFunc !== false) {
-                this.invalidIDFunc();
-            }
-            return null;
-        } else {
-            if (this.validIDFunc !== false) {
-                this.validIDFunc();
-            }
+        if (valid_id) {
+            this.valid_id = true;
             return id;
+        } else {
+            this.valid_id = false;
+            return null;
         }
     }
 
@@ -309,6 +303,8 @@ class trialObject {
 class instrObject {
     constructor(options = {}) {
         Object.assign(this, {
+            textBox: $('#instrBox'),
+            textElement: $('#instrText'),
             text: [],
             funcDict: {},
             qConditions: [],
@@ -323,20 +319,20 @@ class instrObject {
         this.readingTimes = {};
     }
 
-    start(textBox = $('#instrBox'), textElement = $('#instrText')) {
-        textElement.html(this.text[0]);
+    start() {
+        this.textElement.html(this.text[0]);
         if (this.instrKeys.includes(this.index)) {
             this.funcDict[this.index]();
         }
-        textBox.show();
+        this.textBox.show();
         this.startTime = Date.now();
     }
 
-    next(textElement = $('#instrText')) {
+    next() {
         this.saveReadingTime();
         this.index += 1;
         if (this.index < this.text.length) {
-            textElement.html(this.text[this.index]);
+            this.textElement.html(this.text[this.index]);
             if (this.instrKeys.includes(this.index)) {
                 this.funcDict[this.index]();
             }
