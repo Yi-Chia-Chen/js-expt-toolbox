@@ -15,18 +15,18 @@ class subjObject {
     constructor(options = {}) {
         Object.assign(this, {
             num: 'pre-post',
-            subjNumScript: 'subjNum.php',
+            subjNumScript: '',
+            savingScript: '',
             subjNumFile: '',
+            visitFile: 'visit.txt',
+            attritionFile: 'attrition.txt',
+            subjFile: 'subj.txt',
+            savingDir: 'data/testing',
             condition: false,
             conditionList: [''],
             titles: [''],
             viewportMinW: 0,
             viewportMinH: 0,
-            savingScript: 'save.php',
-            attritionFile: 'attrition.txt',
-            visitFile: 'visit.txt',
-            subjFile: 'subj.txt',
-            savingDir: 'data/testing',
             handleVisibilityChange: function(){},
         }, options);
         if (this.num == 'pre-post') {
@@ -193,9 +193,9 @@ class trialObject {
             pracTrialN: 0,
             trialN: 0,
             titles: '',
-            stimPath: 'Stimuli/',
+            savingScript: '',
             dataFile: '',
-            savingScript: 'save.php',
+            stimPath: 'media/',
             savingDir: 'data/testing',
             trialList: [],
             pracList: [],
@@ -303,42 +303,43 @@ class trialObject {
 class instrObject {
     constructor(options = {}) {
         Object.assign(this, {
-            textBox: $('#instrBox'),
-            textElement: $('#instrText'),
-            text: [],
-            funcDict: {},
-            qConditions: [],
-            startExptFunc: false
+            textBox: false,
+            textElement: false,
+            dict: [],
+            quizConditions: []
         }, options);
         this.index = 0;
-        this.instrKeys = Object.keys(this.funcDict).map(Number);
-        this.qAttemptN = {};
-        for (var i=0;i<this.qConditions.length;i++){
-            this.qAttemptN[this.qConditions[i]] = 1;
+        this.quizAttemptN = {};
+        for (var i=0;i<this.quizConditions.length;i++){
+            this.quizAttemptN[this.quizConditions[i]] = 1;
         }
         this.readingTimes = {};
     }
 
-    start() {
-        this.textElement.html(this.text[0]);
-        if (this.instrKeys.includes(this.index)) {
-            this.funcDict[this.index]();
+    advance() {
+        this.textElement.html(this.dict[this.index][2]);
+        const PRE_FUNCTION = this.dict[this.index][0];
+        if (PRE_FUNCTION !== false) {
+            PRE_FUNCTION();
         }
         this.textBox.show();
+        const POST_FUNCTION = this.dict[this.index][1];
+        if (POST_FUNCTION !== false) {
+            POST_FUNCTION();
+        }
         this.startTime = Date.now();
+    }
+
+    start() {
+        this.advance();
     }
 
     next() {
         this.saveReadingTime();
+        this.textBox.hide();
         this.index += 1;
-        if (this.index < this.text.length) {
-            this.textElement.html(this.text[this.index]);
-            if (this.instrKeys.includes(this.index)) {
-                this.funcDict[this.index]();
-            }
-            this.startTime = Date.now();
-        } else {
-            this.startExptFunc();
+        if (this.index < Object.keys(this.dict).length) {
+            this.advance();
         }
     }
 

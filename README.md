@@ -4,6 +4,8 @@ You may find more resource I collected for online experiment here: https://ycc.v
 The example experiment can be viewed here: https://ycc.cvls.online/tools/example/?PROLIFIC_PID=1234
 
 ## Version History
+- 4.1.1 (2020.10.06): Update example experiment
+                      Rename instrObject attribute qConditions & qAttemptN to quizConditions & quizeAttemptN
 - 4.1.0b (2020.10.05): Remove personalized default values for attributes,
                        Change how instruction text is input into instrObject,
                        Add POSITIVE_MOD function in func.js

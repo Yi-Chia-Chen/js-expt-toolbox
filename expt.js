@@ -15,18 +15,18 @@ class subjObject {
     constructor(options = {}) {
         Object.assign(this, {
             num: 'pre-post',
-            subjNumFile: '',
             subjNumScript: '',
+            savingScript: '',
+            subjNumFile: '',
+            visitFile: 'visit.txt',
+            attritionFile: 'attrition.txt',
+            subjFile: 'subj.txt',
+            savingDir: 'data/testing',
             condition: false,
             conditionList: [''],
             titles: [''],
             viewportMinW: 0,
             viewportMinH: 0,
-            attritionFile: 'attrition.txt',
-            visitFile: 'visit.txt',
-            subjFile: 'subj.txt',
-            savingDir: 'data/testing',
-            savingScript: '',
             handleVisibilityChange: function(){},
         }, options);
         if (this.num == 'pre-post') {
@@ -193,10 +193,10 @@ class trialObject {
             pracTrialN: 0,
             trialN: 0,
             titles: '',
-            stimPath: 'media/',
-            dataFile: '',
-            savingDir: 'data/testing',
             savingScript: '',
+            dataFile: '',
+            stimPath: 'media/',
+            savingDir: 'data/testing',
             trialList: [],
             pracList: [],
             intertrialInterval: 0.5,
@@ -306,23 +306,27 @@ class instrObject {
             textBox: false,
             textElement: false,
             dict: [],
-            qConditions: []
+            quizConditions: []
         }, options);
         this.index = 0;
-        this.qAttemptN = {};
-        for (var i=0;i<this.qConditions.length;i++){
-            this.qAttemptN[this.qConditions[i]] = 1;
+        this.quizAttemptN = {};
+        for (var i=0;i<this.quizConditions.length;i++){
+            this.quizAttemptN[this.quizConditions[i]] = 1;
         }
         this.readingTimes = {};
     }
 
     advance() {
-        this.textElement.html(this.dict[this.index][1]);
-        const FUNCTION = this.dict[this.index][0];
-        if (FUNCTION !== false) {
-            FUNCTION();
+        this.textElement.html(this.dict[this.index][2]);
+        const PRE_FUNCTION = this.dict[this.index][0];
+        if (PRE_FUNCTION !== false) {
+            PRE_FUNCTION();
         }
         this.textBox.show();
+        const POST_FUNCTION = this.dict[this.index][1];
+        if (POST_FUNCTION !== false) {
+            POST_FUNCTION();
+        }
         this.startTime = Date.now();
     }
 

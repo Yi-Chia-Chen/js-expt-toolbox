@@ -27,6 +27,28 @@ function LIST_TO_FORMATTED_STRING(data_list, divider) {
     return string;
 }
 
+function TWO_D_ARRAY_TO_STRING(input_array) {
+    var arr = Array.from(input_array);
+    for (var i=0; i<arr.length; i++){
+        arr[i] = '[' + arr[i].toString() + ']';
+    }
+    return '[' + arr.toString() + ']';
+}
+
+function THREE_D_ARRAY_TO_STRING(input_array) {
+    var arr = Array.from(input_array);
+    for (var i=0; i<arr.length; i++) {
+        if (Array.isArray(arr[i])) {
+            for (var j=0; j<arr[i].length; j++) {
+                arr[i][j] = '[' + arr[i][j].toString() + ']';
+            }
+        } else {
+            arr[i] = arr[i].toString();
+        }
+    }
+    return '[' + arr.toString() + ']';
+}
+
 function FORMAT_DATE(date_obj, time_zone, divider, padded) {
     date_obj = (date_obj === undefined) ? new Date() : date_obj;
     time_zone = (time_zone === undefined) ? 'UTC' : time_zone;
@@ -39,8 +61,8 @@ function FORMAT_DATE(date_obj, time_zone, divider, padded) {
         now_month = ('0' + now_month).slice(-2);
         now_date = ('0' + now_date).slice(-2);
     }
-    var now_full_date = NOW_YEAR + divider + now_month + divider + now_date;
-    return now_full_date;
+    const NOW_FULL_DATE = NOW_YEAR + divider + now_month + divider + now_date;
+    return NOW_FULL_DATE;
 }
 
 function FORMAT_TIME(date_obj, time_zone, divider, padded) {
@@ -56,8 +78,33 @@ function FORMAT_TIME(date_obj, time_zone, divider, padded) {
         now_minutes = ('0' + now_minutes).slice(-2);
         now_seconds = ('0' + now_seconds).slice(-2);
     }
-    var now_full_time = now_hours + divider + now_minutes + divider + now_seconds;
-    return now_full_time;
+    const NOW_FULL_TIME = now_hours + divider + now_minutes + divider + now_seconds;
+    return NOW_FULL_TIME;
+}
+
+
+// ##     ##    ###    ######## ##     ##
+// ###   ###   ## ##      ##    ##     ##
+// #### ####  ##   ##     ##    ##     ##
+// ## ### ## ##     ##    ##    #########
+// ##     ## #########    ##    ##     ##
+// ##     ## ##     ##    ##    ##     ##
+// ##     ## ##     ##    ##    ##     ##
+
+function TO_RADIANS(degrees) {
+    return degrees * Math.PI / 180;
+}
+
+function TO_DEGREES(radians) {
+    return radians * 180 / Math.PI % 360;
+}
+
+function POSITIVE_MOD(value, divider) {
+    return ((value % divider) + divider) % divider;
+}
+
+function POLAR_TO_CARTESIAN(r, theta) {
+    return [r * Math.cos(TO_RADIANS(theta)), r * Math.sin(TO_RADIANS(theta))];
 }
 
 
@@ -68,18 +115,6 @@ function FORMAT_TIME(date_obj, time_zone, divider, padded) {
 // ##    ##  ##       ##     ## ##     ## ##          ##    ##   ##      ##
 // ##    ##  ##       ##     ## ##     ## ##          ##    ##    ##     ##
 //  ######   ########  #######  ##     ## ########    ##    ##     ##    ##
-
-function TO_RADIANS(degrees) {
-    return degrees * Math.PI / 180;
-}
-
-function TO_DEGREES(radians) {
-    return radians * 180 / Math.PI % 360;
-}
-
-function POLAR_TO_CARTESIAN(r, theta) {
-    return [r * Math.cos(TO_RADIANS(theta)), r * Math.sin(TO_RADIANS(theta))];
-}
 
 function DISTANCE_BETWEEN_POINTS(point_a, point_b){
     const X_DIFF = point_a[0] - point_b[0];
@@ -92,7 +127,7 @@ function VECTOR_LENGTH(x_diff, y_diff) {
 }
 
 function MIDPOINT_OF_TWO_POINTS(point_1, point_2) {
-    return ((point_1[0]+point_2[0])/2, (point_1[1]+point_2[1])/2);
+    return [(point_1[0]+point_2[0])/2, (point_1[1]+point_2[1])/2];
 }
 
 function SLOPE_FROM_POINTS(point_1, point_2) {
@@ -118,17 +153,17 @@ function LINE_ANGLE_TO_X_AXIS(slope) {
 function INTERSECTION_OF_TWO_LINES(slope_1, y_intercept_1, slope_2, y_intercept_2) {
     const INTERSECTION_X = (y_intercept_2-y_intercept_1) / (slope_1-slope_2);
     const INTERSECTION_Y = (slope_1*y_intercept_2 - slope_2*y_intercept_1) / (slope_1-slope_2);
-    return (INTERSECTION_X, INTERSECTION_Y);
+    return [INTERSECTION_X, INTERSECTION_Y];
 }
 
 function VERTICAL_LINE_INTERSECTION_FROM_POINT_TO_LINE(point_0, slope, y_intercept) {
     const X_0 = point_0[0];
-    return (X_0, slope*X_0+y_intercept);
+    return [X_0, slope*X_0+y_intercept];
 }
 
 function HORIZONTAL_LINE_INTERSECTION_FROM_POINT_TO_LINE(point_0, slope, y_intercept) {
     const Y_0 = point_0[1];
-    return ((Y_0-y_intercept)/slope, Y_0);
+    return [(Y_0-y_intercept)/slope, Y_0];
 }
 
 function POINT_TO_LINE_DISTANCE(point_0, slope, y_intercept) {
@@ -141,7 +176,7 @@ function POINT_TO_LINE_DISTANCE(point_0, slope, y_intercept) {
 function PERPENDICULAR_LINE_OF_A_LINE_PASSING_A_POINT(point_0, slope) {
     const PERPENDICULAR_SLOPE = -1/slope
     const Y_INTERCEPT = point_0[1] - PERPENDICULAR_SLOPE*point_0[0];
-    return (PERPENDICULAR_SLOPE, Y_INTERCEPT);
+    return [PERPENDICULAR_SLOPE, Y_INTERCEPT];
 }
 
 function FOOT_OF_PERPENDICULAR(point_0, slope, y_intercept) {
@@ -155,14 +190,14 @@ function REFLECTION_POINT_THROUGH_A_LINE(point_0, slope, y_intercept) {
     const FOOT_Y = FOOT[1];
     const X_0 = point_0[0];
     const Y_0 = point_0[1];
-    return (2*FOOT_X - X_0, 2*FOOT_Y - Y_0);
+    return [2*FOOT_X - X_0, 2*FOOT_Y - Y_0];
 }
 
 function PERPENDICULAR_BISECTOR(point_1, point_2) {
     const MIDPOINT = MIDPOINT_OF_TWO_POINTS(point_1, point_2);
     const SLOPE = -1/SLOPE_FROM_POINTS(point_1, point_2);
     const Y_INTERCEPT = MIDPOINT[1] - SLOPE*MIDPOINT[0];
-    return (SLOPE, Y_INTERCEPT);
+    return [SLOPE, Y_INTERCEPT];
 }
 
 
@@ -184,15 +219,16 @@ function RANGE(start_num, end_num, interval) {
     return list;
 }
 
-function SHUFFLE_ARRAY(array) {
+function SHUFFLE_ARRAY(input_array) {
     var j, temp;
-    for (var i = array.length - 1; i > 0; i--) {
+    var arr = Array.from(input_array);
+    for (var i = arr.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
-        temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+        temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
     }
-    return array;
+    return arr;
 }
 
 function RAND_CHOICE(list) {
@@ -347,32 +383,40 @@ function POST_DATA(page, data, success_func, error_callback) {
 // ##       ##     ## ##     ## ##     ##  ##  ##   ### ##    ##
 // ########  #######  ##     ## ########  #### ##    ##  ######
 
+function ADD_PREFIX_TO_LIST_OF_STRING(strings, prefix) {
+    var output_list = [];
+    for (var i=0; i<strings.length; i++) {
+        output_list.push(prefix+strings[i]);
+    }
+    return output_list;
+}
+
 function LOAD_IMG(index, stim_path, img_list, after_func) {
     after_func = (after_func === undefined) ? function() { return; } : after_func;
     if (index >= img_list.length) {
         return;
     }
-    var image = new Image();
+    const IMAGE = new Image();
     if (index < img_list.length - 1) {
-        image.onload = function() {
+        IMAGE.onload = function() {
             LOAD_IMG(index + 1, stim_path, img_list, after_func);
         };
     } else {
-        image.onload = after_func;
+        IMAGE.onload = after_func;
     }
-    image.src = stim_path + img_list[index];
+    IMAGE.src = stim_path + img_list[index];
 }
 
 function LOAD_SOUNDS(index, stim_path, sound_list, after_func) {
     if (index >= sound_list.length) {
         return;
     }
-    var sound = new Audio();
+    const SOUND = new Audio();
 
-    sound.src = stim_path + sound_list[index];
+    SOUND.src = stim_path + sound_list[index];
 
     function CHECK_STATE() {
-        if (sound.readyState == 4) {
+        if (SOUND.readyState == 4) {
             clearInterval(check_loading);
             if (index < sound_list.length - 1) {
                 LOAD_SOUNDS(index + 1, stim_path, sound_list, after_func);
@@ -381,7 +425,7 @@ function LOAD_SOUNDS(index, stim_path, sound_list, after_func) {
             }
         } else {
             var current_time = Date.now();
-            var current_duration = (current_time - start_time) / 1000; // in second
+            var current_duration = (current_time - START_TIME) / 1000; // in second
             if (current_duration > 2) {
                 clearInterval(check_loading);
                 if (reload_num > 3) { // giving up
@@ -392,14 +436,14 @@ function LOAD_SOUNDS(index, stim_path, sound_list, after_func) {
                     }
                 } else { // try reloading again
                     reload_num++;
-                    sound.load();
+                    SOUND.load();
                     check_loading = window.setInterval(CHECK_STATE, 20); // update progress every intervalD ms
                 }
             }
         }
     }
 
-    var start_time = Date.now();
+    const START_TIME = Date.now();
     var reload_num = 0;
     var check_loading = window.setInterval(CHECK_STATE, 20); // update progress every intervalD ms
 }
@@ -407,19 +451,19 @@ function LOAD_SOUNDS(index, stim_path, sound_list, after_func) {
 function BUFFER_VIDEO(buffer_element, filename, error_func, after_func) {
     error_func = (error_func === undefined) ? function() { return; } : error_func;
     after_func = (after_func === undefined) ? function() { return; } : after_func;
-    var req = new XMLHttpRequest();
-    req.open('GET', filename, true);
-    req.responseType = 'blob';
-    req.onload = function() {
+    const REQUEST = new XMLHttpRequest();
+    REQUEST.open('GET', filename, true);
+    REQUEST.responseType = 'blob';
+    REQUEST.onload = function() {
         if (this.status === 200) {
-            var video_blob = this.response;
-            var video = URL.createObjectURL(video_blob);
-            buffer_element.src = video;
+            const VIDEO_BLOB = this.response;
+            const VIDEO = URL.createObjectURL(VIDEO_BLOB);
+            buffer_element.src = VIDEO;
             after_func();
         }
     };
-    req.onerror = error_func;
-    req.send();
+    REQUEST.onerror = error_func;
+    REQUEST.send();
 }
 
 
@@ -430,6 +474,16 @@ function BUFFER_VIDEO(buffer_element, filename, error_func, after_func) {
 // ##       ##     ## ##  ####    ##    ##       ##  ####    ##
 // ##    ## ##     ## ##   ###    ##    ##       ##   ###    ##
 //  ######   #######  ##    ##    ##    ######## ##    ##    ##
+
+
+function APPEND_LIST_OF_IMG(img_path_list, img_box) {
+    var img;
+    for (var i=0; i<img_path_list.length; i++) {
+        img = $(document.createElement('img'));
+        img.attr('src', img_path_list[i]);
+        img.appendTo(img_box);
+    }
+}
 
 function LIST_FROM_ATTRIBUTE_NAMES(obj, string_list) {
     var list = []
@@ -452,14 +506,14 @@ function CHECK_IF_RESPONDED(open_ended_list, choice_list) {
 
 function CHECK_FULLY_IN_VIEW(el) {
     el = el.get(0);
-    var rect = el.getBoundingClientRect();
-    var top = rect.top;
-    var bottom = rect.bottom;
-    var left = rect.left;
-    var right = rect.right;
+    const RECT = el.getBoundingClientRect();
+    const TOP = RECT.top;
+    const BOTTOM = RECT.bottom;
+    const LEFT = RECT.left;
+    const RIGHT = RECT.right;
 
-    var w = $(window).width();
-    var h = $(window).height();
-    var is_visible = (top >= 0) && (bottom <= h) && (left >= 0) && (right <= w);
-    return is_visible;
+    const W = $(window).width();
+    const H = $(window).height();
+    const IS_VISIBLE = (TOP >= 0) && (BOTTOM <= H) && (LEFT >= 0) && (RIGHT <= W);
+    return IS_VISIBLE;
 }

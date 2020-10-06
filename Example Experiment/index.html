@@ -7,126 +7,131 @@
     <meta charset='utf-8'>
     <title>UCLA Experiment</title>
     <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Raleway&display=swap' />
-    <link rel='stylesheet' href='style.css' />
-    <script src='https://hcaptcha.com/1/api.js?hl=en' async defer></script>
+    <link rel='stylesheet' href='css/style.css' />
 </head>
 
 <body>
     <noscript>It seems that JavaScript is disabled in your browser. Please go to settings and enable JavaScript for this experiment.</noscript>
 
-    <!--======== hCaptcha ========-->
-    <div class='pageBox' id='captchaBox'>
-        <p class='captchaText'>Just making sure no robot is participating......</p>
-        <div class='h-captcha' data-sitekey='9acad66a-3ceb-4e59-9e6b-716fc867dadb' data-theme='dark' data-callback='HCAPTCHA_SUBMIT'></div>
-    </div>
-
     <!--======== PLEDGE ========-->
-    <div class='pageBox' id='pledgeBox'>
-        <div class='boldText'>Will you read all the instructions carefully and treat the study seriously?</div>
-        <label><div class='option'><input class='optionRadio' type='radio' name='pledge' value='1' /><div class='optionText'>Yes.</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='pledge' value='0' /><div class='optionText'>No.</div></div></label>
-        <div class='button' onclick='SUBMIT_PLEDGE_Q()'>SUBMIT</div>
-        <br />
-        <div class='warning' id='pledgeQWarning'></div>
-        <br />
+    <div class='page-box fixed-box' id='pledge-box'>
+        <div class='bold'>Will you read all the instructions carefully and treat the study seriously?</div>
+        <label><div class='option'><input class='radio' type='radio' name='pledge' value='1' /><p class='option-text'>Yes.</p></div></label>
+        <label><div class='option'><input class='radio' type='radio' name='pledge' value='0' /><p class='option-text'>No.</p></div></label>
+        <button class='button' onclick='SUBMIT_PLEDGE_Q()'>SUBMIT</button>
+        <p class='warning' id='pledge-warning'></p>
     </div>
 
     <!--======== INSTRUCTIONS ========-->
-    <div class='pageBox' id='instrBox'>
-        <p id='instrText'></p>
-        <img id='instrImg' alt='Image Error: Please submit the HIT with the code "IMG-ERROR" to receive your payment.'></img>
-        <div class='button' id='nextButton' onclick='instr.next()'>NEXT</div>
+    <div class='page-box fixed-box' id='instr-box'>
+        <p class='instructions' id='instr-text'></p>
+        <img id='instr-img' src='media/blank.jpg' draggable='false' alt='Image Error: Please submit with the code "IMG-ERROR" to receive your reward.'></img>
+        <button class='button' id='next-button' onclick='instr.next()'>NEXT</button>
         <!--======== INFORMED CONSENT FORM ========-->
-        <div class='pageBox' id='consentBox'>
-            <div class='consentInstr'>To conduct this experiment, we need to include this information sheet:</div>
-            <div id='consentTextBox'>
+        <div class='page-box' id='consent-box'>
+            <div class='consent-instr'>To conduct this experiment, we need to include this information sheet:</div>
+            <div class='form-area'>
                 <strong>CONSENT FORM</strong><br /><br />
-                Your consent form here.
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
+                Your consent form here.<br />
             </div>
         </div>
     </div>
 
     <!--======== INSTRUCTIONS QUIZ ========-->
-    <div class='pageBox' id='instrQBox'>
+    <div class='page-box fixed-box' id='quiz-box'>
         <div class='boldText'>What is your job in this experiment?</div>
-        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='forgot' /><div class='optionText'>Select this option if you do not remember the instructions.</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='option1' /><div class='optionText'>Option 1</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='instrQ' value='option2' /><div class='optionText'>Option 2</div></div></label>
-        <div class='button' onclick='SUBMIT_INSTR_Q()'>SUBMIT</div>
-        <br />
-        <div class='warning' id='instrQWarning'></div>
-        <br />
+        <label><div class='option'><input class='radio' type='radio' name='quiz' value='forgot' /><p class='option-text'>Select this option if you do not remember the instructions.</p></div></label>
+        <label><div class='option'><input class='radio' type='radio' name='quiz' value='option1' /><p class='option-text'>Option 1</p></div></label>
+        <label><div class='option'><input class='radio' type='radio' name='quiz' value='option2' /><p class='option-text'>Option 2</p></div></label>
+        <button class='button' onclick='SUBMIT_INSTR_Q()'>SUBMIT</button>
+        <p class='warning' id='quiz-warning'></p>
     </div>
 
-    <!--======== TRIALS ========-->
-    <div class='pageBox' id='trialBox'>
-        <div class='progressBar' id='trialProgressBar'><span id='trialProgress'>0</span>% completed</div>
-        <div class='testImgPlaceHolder'>
-            <img id='testImg' src='Stimuli/blank.jpg' alt='Image Error: Please submit the HIT with the code "IMG-ERROR" to receive your payment.' draggable='false'/>
+    <!--======== TASK ========-->
+    <div class='page-box' id='task-box'>
+        <div class='progress-bar' id='trial-progress-bar'><span id='trial-progress'>0</span>% completed</div>
+        <div class='test-area'>
+            <img id='test-img' src='media/blank.jpg' draggable='false' alt='Image Error: Please submit the HIT with the code "IMG-ERROR" to receive your payment.'/>
         </div>
-        <div class='bufferDiv' alt=''>
-            <img id='bufferImg' src='Stimuli/blank.jpg' alt='' />
+        <div class='buffer' alt=''>
+            <img id='buffer-img' src='media/blank.jpg' alt='' />
         </div>
-        <div id='ratingContainer' class='ratingContainer'>
-            <div class='ratingButton r6' id='r6'><p class='ratingLabels'>Certainly<br />Positive</p></div>
-            <div class='ratingButton r5' id='r5'><p class='ratingLabels'>Probably<br />Positive</p></div>
-            <div class='ratingButton r4' id='r4'><p class='ratingLabels'>Maybe<br />Positive</p></div>
-            <div class='ratingButton r3' id='r3'><p class='ratingLabels'>Maybe<br />Not Positive</p></div>
-            <div class='ratingButton r2' id='r2'><p class='ratingLabels'>Probably<br />Not Positive</p></div>
-            <div class='ratingButton r1' id='r1'><p class='ratingLabels'>Certainly<br />Not Positive</p></div>
+        <div class='rating-area' id='rating-area'>
+            <div class='rating-button r6' id='r6'><p class='rating-labels'>Certainly<br />Positive</p></div>
+            <div class='rating-button r5' id='r5'><p class='rating-labels'>Probably<br />Positive</p></div>
+            <div class='rating-button r4' id='r4'><p class='rating-labels'>Maybe<br />Positive</p></div>
+            <div class='rating-button r3' id='r3'><p class='rating-labels'>Maybe<br />Not Positive</p></div>
+            <div class='rating-button r2' id='r2'><p class='rating-labels'>Probably<br />Not Positive</p></div>
+            <div class='rating-button r1' id='r1'><p class='rating-labels'>Certainly<br />Not Positive</p></div>
         </div>
     </div>
 
 
-    <!--======== DEBRIEFING QUESTION ========-->
-    <div class='pageBox' id='questionsBox'>
-        You are almost done! Now please answer these last 4 questions:<br /><br /><br />
-
-        <div class='boldText'>Did you complete this experiment seriously throughout (without randomly responding)?</div>
-        <div class='smallDimText'>You will receive payment regardless of what your answer is here. Please be honest for science! Thanks!</div>
-        <label><div class='option'><input class='optionRadio' type='radio' name='serious' value='0' /><div class='optionText'>No, I didn't.</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='serious' value='1' /><div class='optionText'>Yes, I did.</div></div></label>
-
-        <br /><br /><br />
-
-        <div class='boldText'>Was any part of the procedure unclear? Did you have any problems completing any of the tasks?</div>
-        <div class='smallDimText'>You will receive payment regardless of what your answer is here. Please be honest for science! Thanks!</div>
-        <textarea id='problems' rows='3' cols='90'></textarea>
-
-        <br /><br /><br />
-
-        <div class='boldText'>What is your gender?</div>
-        <label><div class='option'><input class='optionRadio' type='radio' name='gender' value='F' /><div class='optionText'>Female</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='gender' value='M' /><div class='optionText'>Male</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='gender' value='O' /><div class='optionText'>Other</div></div></label>
-        <label><div class='option'><input class='optionRadio' type='radio' name='gender' value='N' /><div class='optionText'>I would rather not say</div></div></label>
-
-        <br /><br /><br />
-
-        <div class='boldText'>What is your age?</div>
-        <input type='number' id='age' min='0' max='199'/>
-
-        <br /><br /><br />
-
-        <div class='button' onclick='SUBMIT_DEBRIEFING_Q()'>SUBMIT</div>
-        <br />
-        <div class='warning' id='QWarning'></div>
-        <br />
+    <!--======== DEBRIEFING QUESTIONS ========-->
+    <div class='page-box' id='questions-box'>
+        <div class='question'>
+            You are almost done! Please answer these last 4 questions:
+        </div>
+        <div class='question'>
+            <p class='bold'>Did you complete this experiment seriously throughout (without responding randomly)?</p>
+            <p class='small-dim'>You will receive reward regardless of what your answer is here. Please be honest for science! Thanks!</p>
+            <label><div class='option'><input class='radio' type='radio' name='serious' value='0' /><p class='option-text'>No, I didn't.</p></div></label>
+            <label><div class='option'><input class='radio' type='radio' name='serious' value='1' /><p class='option-text'>Yes, I did.</p></div></label>
+        </div>
+        <div class='question'>
+            <p class='bold'>Was any part of the procedure unclear? Did you have any problems completing any of the tasks?</p>
+            <p class='small-dim'>You will receive payment regardless of what your answer is here. Please be honest for science! Thanks!</p>
+            <textarea id='problems'></textarea>
+        </div>
+        <div class='question'>
+            <p class='bold'>What is your gender?</p>
+            <label><div class='option'><input class='radio' type='radio' name='gender' value='F' /><p class='option-text'>Female</p></div></label>
+            <label><div class='option'><input class='radio' type='radio' name='gender' value='M' /><p class='option-text'>Male</p></div></label>
+            <label><div class='option'><input class='radio' type='radio' name='gender' value='O' /><p class='option-text'>Other</p></div></label>
+            <label><div class='option'><input class='radio' type='radio' name='gender' value='N' /><p class='option-text'>I would rather not say</p></div></label>
+        </div>
+        <div class='question'>
+            <p class='bold'>What is your age?</p>
+            <input type='number' id='age' min='0' max='199'/>
+        </div>
+        <button class='button' onclick='SUBMIT_DEBRIEFING_Q()'>SUBMIT</button>
+        <p class='warning' id='questions-warning'></p>
     </div>
 
     <!--======== DEBRIEFING ========-->
-    <div class='pageBox' id='debriefingBox'>
-        You have finished the experiment! Thank you very much!<br /><br /> Whenever you are ready, click END to submit your work. You may read the text below if you are interested in what we are studying.<br />
-        <div class='button' onclick='END_TO_PROLIFIC()'>END</div>
-        <br /><br />
+    <div class='page-box' id='debriefing-box'>
+        You are done! Thank you very much!<br />
+        Whenever you are ready, click END to submit your work.
+
+        <button class='button' onclick='END_TO_PROLIFIC()'>END</button>
+        Interested in what we are testing? See below for more information!<br /><br />
         <strong>Debriefing Sheet</strong><br />
         Your debriefing sheet here.
     </div>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.3/mobile-detect.min.js'></script>
-    <script src='func.js'></script>
-    <script src='expt.js'></script>
-    <script src='index.js'></script>
+    <script src='js/func.js'></script>
+    <script src='js/expt.js'></script>
+    <script src='js/main.js'></script>
 </body>
 
 </html>
