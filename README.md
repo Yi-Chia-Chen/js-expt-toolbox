@@ -4,6 +4,11 @@ You may find more resource I collected for online experiment here: https://ycc.v
 The example experiment can be viewed here: https://ycc.cvls.online/tools/example/?PROLIFIC_PID=1234
 
 ## Version History
+- 4.1.0b (2020.10.05): Remove personalized default values for attributes,
+                       Change how instruction text is input into instrObject,
+                       Add POSITIVE_MOD function in func.js
+  - Used in Social Avoidance Pilot
+
 - 4.0.0b (2020.10.02): Add many new functions to and reorganize func.js,
                        Add instruction elements as attribute of instrObject,
                        Get rid of invalidIDFunc and validIDFunc in subjObject,

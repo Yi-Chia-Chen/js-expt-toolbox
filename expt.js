@@ -15,18 +15,18 @@ class subjObject {
     constructor(options = {}) {
         Object.assign(this, {
             num: 'pre-post',
-            subjNumScript: 'subjNum.php',
             subjNumFile: '',
+            subjNumScript: '',
             condition: false,
             conditionList: [''],
             titles: [''],
             viewportMinW: 0,
             viewportMinH: 0,
-            savingScript: 'save.php',
             attritionFile: 'attrition.txt',
             visitFile: 'visit.txt',
             subjFile: 'subj.txt',
             savingDir: 'data/testing',
+            savingScript: '',
             handleVisibilityChange: function(){},
         }, options);
         if (this.num == 'pre-post') {
@@ -193,10 +193,10 @@ class trialObject {
             pracTrialN: 0,
             trialN: 0,
             titles: '',
-            stimPath: 'Stimuli/',
+            stimPath: 'media/',
             dataFile: '',
-            savingScript: 'save.php',
             savingDir: 'data/testing',
+            savingScript: '',
             trialList: [],
             pracList: [],
             intertrialInterval: 0.5,
@@ -303,15 +303,12 @@ class trialObject {
 class instrObject {
     constructor(options = {}) {
         Object.assign(this, {
-            textBox: $('#instrBox'),
-            textElement: $('#instrText'),
-            text: [],
-            funcDict: {},
-            qConditions: [],
-            startExptFunc: false
+            textBox: false,
+            textElement: false,
+            dict: [],
+            qConditions: []
         }, options);
         this.index = 0;
-        this.instrKeys = Object.keys(this.funcDict).map(Number);
         this.qAttemptN = {};
         for (var i=0;i<this.qConditions.length;i++){
             this.qAttemptN[this.qConditions[i]] = 1;
@@ -319,28 +316,26 @@ class instrObject {
         this.readingTimes = {};
     }
 
-    start() {
-        this.textElement.html(this.text[0]);
-        if (this.instrKeys.includes(this.index)) {
-            this.funcDict[this.index]();
+    advance() {
+        this.textElement.html(this.dict[this.index][1]);
+        const FUNCTION = this.dict[this.index][0];
+        if (FUNCTION !== false) {
+            FUNCTION();
         }
         this.textBox.show();
         this.startTime = Date.now();
+    }
+
+    start() {
+        this.advance();
     }
 
     next() {
         this.saveReadingTime();
         this.textBox.hide();
         this.index += 1;
-        if (this.index < this.text.length) {
-            this.textElement.html(this.text[this.index]);
-            if (this.instrKeys.includes(this.index)) {
-                this.funcDict[this.index]();
-            }
-            this.textBox.show();
-            this.startTime = Date.now();
-        } else {
-            this.startExptFunc();
+        if (this.index < Object.keys(this.dict).length) {
+            this.advance();
         }
     }
 
