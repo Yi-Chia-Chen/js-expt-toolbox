@@ -264,7 +264,11 @@ function REPEAT_ELEMENTS_IN_ARRAY(arr, repeat_n) {
     var new_arr = [];
     for (var i = 0; i < arr.length; i++) {
         for (var j = 0; j < repeat_n; j++) {
-            new_arr.push(arr[i]);
+            if (Array.isArray(arr[i])) {
+                new_arr.push(arr[i].slice());
+            } else {
+                new_arr.push(arr[i]);
+            }
         }
     }
     return new_arr;
@@ -283,28 +287,30 @@ function CREATE_RANDOM_REPEAT_BEGINNING_LIST(stim_list, repeat_trial_n) {
     return REPEAT_LIST.concat(stim_list);
 }
 
-function FACTORIAL_COND(factor_list) {
-    function RECURSIVE_COMBINE(current_factor, remain_factor_list) {
-        all_conditions = REPEAT_ELEMENTS_IN_ARRAY(all_conditions, current_factor.length);
-        for (var j = 0; j < all_conditions.length; j += current_factor.length) {
-            for (var k = 0; k < current_factor.length; k++) {
-                var index = j + k;
-                all_conditions[index].push(current_factor[k]);
-            }
-        }
-
-        if (remain_factor_list.length !== 0) {
-            current_factor = remain_factor_list.shift();
-            RECURSIVE_COMBINE(current_factor, remain_factor_list);
+function RECURSIVE_COMBINE(current_factor, remain_factor_list, conditions) {
+    conditions = REPEAT_ELEMENTS_IN_ARRAY(conditions.slice(), current_factor.length);
+    for (var j = 0; j < conditions.length; j += current_factor.length) {
+        for (var k = 0; k < current_factor.length; k++) {
+            var index = j + k;
+            conditions[index].push(current_factor[k]);
         }
     }
+    if (remain_factor_list.length !== 0) {
+        current_factor = remain_factor_list.shift();
+        RECURSIVE_COMBINE(current_factor, remain_factor_list, conditions);
+    } else {
+        return conditions.slice();
+    }
+}
+
+function FACTORIAL_COND(factor_list) {
     var now_factor = factor_list.shift();
     var all_conditions = [];
     for (var i = 0; i < now_factor.length; i++) {
         all_conditions.push([now_factor[i]])
     }
     now_factor = factor_list.shift();
-    RECURSIVE_COMBINE(now_factor, factor_list);
+    all_conditions = RECURSIVE_COMBINE(now_factor, factor_list, all_conditions);
     return all_conditions;
 }
 

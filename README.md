@@ -4,12 +4,16 @@ You may find more resource I collected for online experiment here: https://ycc.v
 The example experiment can be viewed here: https://ycc.cvls.online/tools/example/?PROLIFIC_PID=1234
 
 ## Version History
+- 4.2.0 (2020.11.05): Fix a bug in function FACTORIAL_COND in func.js
+  - new func.js was used for Social Avoidance Prolific Pilot, the rest of the code are still from v4.1.0b
+
 - 4.1.1 (2020.10.06): Update example experiment
                       Rename instrObject attribute qConditions & qAttemptN to quizConditions & quizeAttemptN
+
 - 4.1.0b (2020.10.05): Remove personalized default values for attributes,
                        Change how instruction text is input into instrObject,
                        Add POSITIVE_MOD function in func.js
-  - Used in Social Avoidance Pilot
+  - Used in Social Avoidance Mturk Pilot
 
 - 4.0.0b (2020.10.02): Add many new functions to and reorganize func.js,
                        Add instruction elements as attribute of instrObject,
