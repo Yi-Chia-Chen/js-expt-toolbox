@@ -170,11 +170,12 @@ function SUBMIT_DEBRIEFING_Q() {
     subj.gender = $('input[name=gender]:checked').val();
     subj.age = $('#age').val();
     const OPEN_ENDED_LIST = [subj.problems, subj.age];
+    const OPEN_ENDED_ATTRIBUTE_NAMES = ['problems', 'age'];
     const CHOICE_LIST = [subj.serious, subj.gender];
     const ALL_RESPONDED = CHECK_IF_RESPONDED(OPEN_ENDED_LIST, CHOICE_LIST);
     if (ALL_RESPONDED) {
         for (var i = 0; i < OPEN_ENDED_LIST.length; i++) {
-            OPEN_ENDED_LIST[i] = OPEN_ENDED_LIST[i].replace(/(?:\r\n|\r|\n)/g, '<br />');
+            subj[OPEN_ENDED_ATTRIBUTE_NAMES[i]] = subj[OPEN_ENDED_ATTRIBUTE_NAMES[i]].replace(/(?:\r\n|\r|\n)/g, '<br />');
         }
         subj.quizAttemptN = instr.quizAttemptN['onlyQ'];
         subj.instrReadingTimes = JSON.stringify(instr.readingTimes);

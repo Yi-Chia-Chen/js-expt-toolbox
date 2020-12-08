@@ -297,7 +297,7 @@ function RECURSIVE_COMBINE(current_factor, remain_factor_list, conditions) {
     }
     if (remain_factor_list.length !== 0) {
         current_factor = remain_factor_list.shift();
-        RECURSIVE_COMBINE(current_factor, remain_factor_list, conditions);
+        return RECURSIVE_COMBINE(current_factor, remain_factor_list, conditions);
     } else {
         return conditions.slice();
     }
