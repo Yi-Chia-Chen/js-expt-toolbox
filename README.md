@@ -4,6 +4,8 @@ You may find more resource I collected for online experiment here: https://ycc.v
 The example experiment can be viewed here: https://ycc.cvls.online/tools/example/?PROLIFIC_PID=1234
 
 ## Version History
+- 4.3.1 (2021.01.07): Add subject number callback function in expt.js
+  - Used in Self Recognition Pretest and Formal
 - 4.2.1 (2020.12.08): Fix a bug in function RECURSIVE_COMBINE in func.js
                       Fix a bug in example experiment open-ended response saving (replacing linebreak)
   - new func.js was used for Social Avoidance Direction Control, the rest of the code are still from v4.1.0b

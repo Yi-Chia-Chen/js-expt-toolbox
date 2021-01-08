@@ -155,6 +155,12 @@ function REFUSE_PLEDGE() {
     HALT_EXPERIMENT('It seems that you have reported that you will not read the instructions carefully. In that case, you will not be fully informed and thus we are not allowed to let you participate because of the ethical concerns.<br /><br /> We are sorry that we have to ask you to return the task.');
 }
 
+function UPDATE_TRIAL_OBJECT_SUBJ_NUM() {
+    if (typeof trial !== 'undefined'){
+        trial.num = subj.num;
+    }
+}
+
 function HANDLE_VISIBILITY_CHANGE() {
     if (document.hidden) {
         subj.hiddenCount += 1;
@@ -207,6 +213,7 @@ var subj_options = {
     titles: SUBJ_TITLES,
     viewportMinW: VIEWPORT_MIN_W,
     viewportMinH: VIEWPORT_MIN_H,
+    subjNumCallback: UPDATE_TRIAL_OBJECT_SUBJ_NUM,
     subjNumScript: SUBJ_NUM_SCRIPT,
     savingScript: SAVING_SCRIPT,
     subjNumFile: SUBJ_NUM_FILE,

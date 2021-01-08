@@ -16,6 +16,7 @@ class subjObject {
         Object.assign(this, {
             num: 'pre-post',
             subjNumScript: '',
+            subjNumCallback: function(){},
             savingScript: '',
             subjNumFile: '',
             visitFile: 'visit.txt',
@@ -30,7 +31,7 @@ class subjObject {
             handleVisibilityChange: function(){},
         }, options);
         if (this.num == 'pre-post') {
-            this.obtainSubjNum(this.subjNumScript, this.subjNumFile);
+            this.obtainSubjNum();
         }
         this.data = LIST_TO_FORMATTED_STRING(this.titles);
         this.dateObj = new Date();
@@ -41,18 +42,20 @@ class subjObject {
         this.hiddenDurations = [];
     }
 
-    obtainSubjNum(subjNumScript, subjNumFile) {
+    obtainSubjNum() {
         var that = this;
         function SUBJ_NUM_UPDATE_SUCCEEDED(number) {
             that.num = number;
+            that.subjNumCallback();
             if (that.condition == 'auto') {
                 that.assignCondition();
             }
         }
         function SUBJ_NUM_UPDATE_FAILED() {
             that.num = -999;
+            that.subjNumCallback();
         }
-        POST_DATA(subjNumScript, { 'directory_path': this.savingDir, 'file_name': this.subjNumFile }, SUBJ_NUM_UPDATE_SUCCEEDED, SUBJ_NUM_UPDATE_FAILED);
+        POST_DATA(this.subjNumScript, { 'directory_path': this.savingDir, 'file_name': this.subjNumFile }, SUBJ_NUM_UPDATE_SUCCEEDED, SUBJ_NUM_UPDATE_FAILED);
     }
 
     assignCondition() {
