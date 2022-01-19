@@ -1,11 +1,19 @@
 # js-expt-toolbox
 This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.
 You may find more resource I collected for online experiment here: https://ycc.vision/Resource/
-The example experiment can be viewed here: https://ycc.cvls.online/tools/example/?PROLIFIC_PID=1234
+The example experiment can be viewed here: https://cvlstudy.psych.ucla.edu/ycc/tool/example/?id=1234
 
 ## Version History
+- 5.0.0b (2022.01.18): Break down expt.js to subj.js, instr.js, & task.js
+                       Fix function and class naming
+                       Update example experiment
+                       Use array instead of dictionary for instructions
+                       Update to for of/in loop wherever possible
+                       Break down some functions
+
 - 4.3.1 (2021.01.07): Add subject number callback function in expt.js
   - Used in Self Recognition Pretest and Formal
+
 - 4.2.1 (2020.12.08): Fix a bug in function RECURSIVE_COMBINE in func.js
                       Fix a bug in example experiment open-ended response saving (replacing linebreak)
   - new func.js was used for Social Avoidance Direction Control, the rest of the code are still from v4.1.0b
@@ -85,13 +93,9 @@ The example experiment can be viewed here: https://ycc.cvls.online/tools/example
 ## Planned Improvements
 
 ### Features
-- End the experiment if people refresh after a certain point in formal experiment
+- End the experiment if people refresh after a certain point in formal experiment (Wait for Safari to support PerformanceNavigationTiming)
 - Add method to restart a block
-- Made rest method more usable with the block method (allow customized text)
 
 ### Cleaning up
-- Rename all variables according to style guidelines (e.g., class name use Pascal case)
 - Make all functions do one thing only
 - Write unit tests
-- Use button tag for buttons
-- Comply to HTML 5 standard

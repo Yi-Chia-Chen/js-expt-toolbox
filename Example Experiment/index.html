@@ -1,10 +1,8 @@
-<!-- Yi-Chia Chen -->
-
 <!DOCTYPE html>
 <html lang='en' translate='no'>
 
 <head>
-    <meta charset='utf-8'>
+    <meta charset='UTF-8'>
     <title>UCLA Experiment</title>
     <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Raleway&display=swap' />
     <link rel='stylesheet' href='css/style.css' />
@@ -13,19 +11,10 @@
 <body>
     <noscript>It seems that JavaScript is disabled in your browser. Please go to settings and enable JavaScript for this experiment.</noscript>
 
-    <!--======== PLEDGE ========-->
-    <div class='page-box fixed-box' id='pledge-box'>
-        <div class='bold'>Will you read all the instructions carefully and treat the study seriously?</div>
-        <label><div class='option'><input class='radio' type='radio' name='pledge' value='1' /><p class='option-text'>Yes.</p></div></label>
-        <label><div class='option'><input class='radio' type='radio' name='pledge' value='0' /><p class='option-text'>No.</p></div></label>
-        <button class='button' onclick='SUBMIT_PLEDGE_Q()'>SUBMIT</button>
-        <p class='warning' id='pledge-warning'></p>
-    </div>
-
     <!--======== INSTRUCTIONS ========-->
     <div class='page-box fixed-box' id='instr-box'>
         <p class='instructions' id='instr-text'></p>
-        <img id='instr-img' src='media/blank.jpg' draggable='false' alt='Image Error: Please submit with the code "IMG-ERROR" to receive your reward.'></img>
+        <img id='instr-img' src='media/blank.jpg' draggable='false' alt='Image Error: Please email yichiachen@g.ucla.edu with the message "IMG-ERROR" to receive credit.'></img>
         <button class='button' id='next-button' onclick='instr.next()'>NEXT</button>
         <!--======== INFORMED CONSENT FORM ========-->
         <div class='page-box' id='consent-box'>
@@ -58,11 +47,14 @@
 
     <!--======== INSTRUCTIONS QUIZ ========-->
     <div class='page-box fixed-box' id='quiz-box'>
-        <div class='boldText'>What is your job in this experiment?</div>
+        <div class='bold'>What is your job in this experiment?</div>
         <label><div class='option'><input class='radio' type='radio' name='quiz' value='forgot' /><p class='option-text'>Select this option if you do not remember the instructions.</p></div></label>
-        <label><div class='option'><input class='radio' type='radio' name='quiz' value='option1' /><p class='option-text'>Option 1</p></div></label>
+        <label><div class='option'><input class='radio' type='radio' name='quiz' value='option1' /><p class='option-text'>Option 1 (correct)</p></div></label>
         <label><div class='option'><input class='radio' type='radio' name='quiz' value='option2' /><p class='option-text'>Option 2</p></div></label>
-        <button class='button' onclick='SUBMIT_INSTR_Q()'>SUBMIT</button>
+        <label><div class='option'><input class='radio' type='radio' name='quiz' value='option3' /><p class='option-text'>Option 3</p></div></label>
+        <label><div class='option'><input class='radio' type='radio' name='quiz' value='option4' /><p class='option-text'>Option 4</p></div></label>
+        <label><div class='option'><input class='radio' type='radio' name='quiz' value='option5' /><p class='option-text'>Option 5</p></div></label>
+        <button class='button' onclick='submit_instruction_quiz()'>SUBMIT</button>
         <p class='warning' id='quiz-warning'></p>
     </div>
 
@@ -70,21 +62,22 @@
     <div class='page-box' id='task-box'>
         <div class='progress-bar' id='trial-progress-bar'><span id='trial-progress'>0</span>% completed</div>
         <div class='test-area'>
-            <img id='test-img' src='media/blank.jpg' draggable='false' alt='Image Error: Please submit the HIT with the code "IMG-ERROR" to receive your payment.'/>
+            <img id='test-img' src='media/blank.jpg' draggable='false' alt='Image Error: Please email yichiachen@g.ucla.edu with the message "IMG-ERROR" to receive credit.'/>
         </div>
         <div class='buffer' alt=''>
             <img id='buffer-img' src='media/blank.jpg' alt='' />
         </div>
         <div class='rating-area' id='rating-area'>
-            <div class='rating-button r6' id='r6'><p class='rating-labels'>Certainly<br />Positive</p></div>
-            <div class='rating-button r5' id='r5'><p class='rating-labels'>Probably<br />Positive</p></div>
-            <div class='rating-button r4' id='r4'><p class='rating-labels'>Maybe<br />Positive</p></div>
-            <div class='rating-button r3' id='r3'><p class='rating-labels'>Maybe<br />Not Positive</p></div>
-            <div class='rating-button r2' id='r2'><p class='rating-labels'>Probably<br />Not Positive</p></div>
-            <div class='rating-button r1' id='r1'><p class='rating-labels'>Certainly<br />Not Positive</p></div>
+            <div class='rating-anchors anchor-right'>Very much</div>
+            <div class='rating-button r6' id='r6'>6</div>
+            <div class='rating-button r5' id='r5'>5</div>
+            <div class='rating-button r4' id='r4'>4</div>
+            <div class='rating-button r3' id='r3'>3</div>
+            <div class='rating-button r2' id='r2'>2</div>
+            <div class='rating-button r1' id='r1'>1</div>
+            <div class='rating-anchors anchor-left'>Not at all</div>
         </div>
     </div>
-
 
     <!--======== DEBRIEFING QUESTIONS ========-->
     <div class='page-box' id='questions-box'>
@@ -93,14 +86,23 @@
         </div>
         <div class='question'>
             <p class='bold'>Did you complete this experiment seriously throughout (without responding randomly)?</p>
-            <p class='small-dim'>You will receive reward regardless of what your answer is here. Please be honest for science! Thanks!</p>
+            <p class='small-dim'>You will receive credit regardless of what your answer is here. Please be honest for science! Thanks!</p>
             <label><div class='option'><input class='radio' type='radio' name='serious' value='0' /><p class='option-text'>No, I didn't.</p></div></label>
             <label><div class='option'><input class='radio' type='radio' name='serious' value='1' /><p class='option-text'>Yes, I did.</p></div></label>
+            <p class='warning' id='serious-warning'>Please answer this question to complete the experiment. Thank you!</p>
+        </div>
+        <div class='question'>
+            <p class='bold'>Was the browser in the full-screen mode throughout the experiment?</p>
+            <p class='small-dim'>You will receive credit regardless of what your answer is here. Please be honest for science! Thanks!</p>
+            <label><div class='option'><input class='radio' type='radio' name='maximized' value='0' /><p class='option-text'>No, it wasn't.</p></div></label>
+            <label><div class='option'><input class='radio' type='radio' name='maximized' value='1' /><p class='option-text'>Yes, it was.</p></div></label>
+            <p class='warning' id='maximized-warning'>Please answer this question to complete the experiment. Thank you!</p>
         </div>
         <div class='question'>
             <p class='bold'>Was any part of the procedure unclear? Did you have any problems completing any of the tasks?</p>
-            <p class='small-dim'>You will receive payment regardless of what your answer is here. Please be honest for science! Thanks!</p>
+            <p class='small-dim'>You will receive credit regardless of what your answer is here. Please be honest for science! Thanks!</p>
             <textarea id='problems'></textarea>
+            <p class='warning' id='problems-warning'>Please answer this question to complete the experiment. Thank you!</p>
         </div>
         <div class='question'>
             <p class='bold'>What is your gender?</p>
@@ -108,29 +110,48 @@
             <label><div class='option'><input class='radio' type='radio' name='gender' value='M' /><p class='option-text'>Male</p></div></label>
             <label><div class='option'><input class='radio' type='radio' name='gender' value='O' /><p class='option-text'>Other</p></div></label>
             <label><div class='option'><input class='radio' type='radio' name='gender' value='N' /><p class='option-text'>I would rather not say</p></div></label>
+            <p class='warning' id='gender-warning'>Please answer this question to complete the experiment. Thank you!</p>
         </div>
         <div class='question'>
             <p class='bold'>What is your age?</p>
-            <input type='number' id='age' min='0' max='199'/>
+            <input type='number' id='age' min='0' max='150'/>
+            <p class='warning' id='age-warning'>Please give a valid answer for this question. Thank you!</p>
         </div>
-        <button class='button' onclick='SUBMIT_DEBRIEFING_Q()'>SUBMIT</button>
-        <p class='warning' id='questions-warning'></p>
+        <button class='button' onclick='submit_debriefing_questions()'>SUBMIT</button>
     </div>
 
     <!--======== DEBRIEFING ========-->
     <div class='page-box' id='debriefing-box'>
-        You are done! Thank you very much!<br />
-        Whenever you are ready, click END to submit your work.
-
-        <button class='button' onclick='END_TO_PROLIFIC()'>END</button>
-        Interested in what we are testing? See below for more information!<br /><br />
-        <strong>Debriefing Sheet</strong><br />
-        Your debriefing sheet here.
-    </div>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
+        <p class='instructions'>Now there's one step left: Click END to get your credit! Thank you very much!<br /><br />
+        Interested in what we are testing? See below for more information.</p>
+        <button class='button' onclick='go_to_completion_page()'>END</button>
+        <div class='debriefing-area'>
+            <strong>Debriefing Sheet</strong><br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.<br />
+            Your debriefing sheet here.
+        </div>
+    </p>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.3/mobile-detect.min.js'></script>
     <script src='js/func.js'></script>
-    <script src='js/expt.js'></script>
+    <script src='js/subj.js'></script>
+    <script src='js/task.js'></script>
+    <script src='js/instr.js'></script>
     <script src='js/main.js'></script>
 </body>
 

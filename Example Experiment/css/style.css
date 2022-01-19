@@ -1,4 +1,3 @@
-/* Yi-Chia Chen */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -52,10 +51,6 @@ body{
     max-height: 100%;
     transform: translate(-50%, -50%);
 }
-.warning {
-    padding: 30px 0;
-    color: #ffc8c8;
-}
 .button {
     display: block;
     position: relative;
@@ -75,6 +70,19 @@ body{
 }
 .button:active {
     background: #111;
+}
+.warning {
+    display: none;
+    padding: 30px 0;
+    color: #ffc8c8;
+}
+.bold {
+    font-weight: bold;
+}
+.small-dim {
+    color: #bbb;
+    font-size: 20px;
+    line-height: 32px;
 }
 
 
@@ -126,7 +134,6 @@ body{
     background: #bbb;
 }
 
-
 /* ########    ###     ######  ##    ##  */
 /*    ##      ## ##   ##    ## ##   ##   */
 /*    ##     ##   ##  ##       ##  ##    */
@@ -160,55 +167,71 @@ body{
 	display: none;
 }
 .rating-area {
-    padding: 30px;
-    width: 100%;
-    height: 114px;
+    position: relative;
+    margin: 30px auto;
+    width: 780px;
+    height: 70px;
 }
-.rating-button{
+.rating-button,
+.instr-rating-button {
 	position: absolute;
-	width: 110px;
-    height: 54px;
+	width: 70px;
+    height: 70px;
 	color: black;
-	border: 2px solid white;
+	border: 4px solid white;
 	text-align: center;
-    font-size: 16px;
-	line-height: 20px;
+    font-family: monospace;
+    font-size: 30px;
+	line-height: 66px;
 	cursor: pointer;
 }
-.rating-button:hover{
+.instr-rating-button {
+    cursor: default;
+}
+.rating-button:hover {
 	border-color: #333388;
 }
-.rating-button:active{
+.rating-button:active {
 	background: white;
 }
-.r1{
-	left: 20px;
+.r1 {
+	left: 130px;
 	background: #e6e6ff;
 }
-.r2{
-	left: 150px;
+.r2 {
+	left: 220px;
 	background: #ccccff;
 }
-.r3{
-	left: 280px;
+.r3 {
+	left: 310px;
 	background: #b3b3ff;
 }
-.r4{
-	left: 410px;
+.r4 {
+	left: 400px;
 	background: #9999ff;
 }
-.r5{
-	left: 540px;
+.r5 {
+	left: 490px;
 	background: #8080ff;
 }
-.r6{
-	left: 670px;
+.r6 {
+	left: 580px;
 	background: #6666ff;
 }
-.rating-labels {
-    padding: 5px 0;
+.rating-anchors {
+    position: absolute;
+	width: 110px;
+    height: 70px;
+	line-height: 70px;
 }
-
+.anchor-left {
+    left: 0;
+    text-align: right;
+}
+.anchor-right {
+    left: 670px;
+    text-align: left;
+}
 
 
 /*  #######  ##     ## ########  ######  ######## ####  #######  ##    ##  ######   */
@@ -221,14 +244,6 @@ body{
 
 .question {
     margin: 50px 0;
-}
-.bold {
-    font-weight: bold;
-}
-.small-dim {
-    color: #bbb;
-    font-size: 20px;
-    line-height: 32px;
 }
 .option {
     position: relative;
@@ -255,17 +270,20 @@ body{
     left: 28px;
     width: calc(100% - 28px);
 }
-input[type="text"],
+input[type='number'],
 textarea {
     background-color: #f5f5f5;
+    padding: 5px;
+    margin: 10px 0;
 }
 #problems {
-    position: relative;
-    margin: 10px 0;
     width: 100%;
     height: 100px;
 }
-
+#age {
+    width: 50px;
+    height: 28px;
+}
 
 /* ########  ######## ########  ########  #### ######## ######## #### ##    ##  ######    */
 /* ##     ## ##       ##     ## ##     ##  ##  ##       ##        ##  ###   ## ##    ##   */
@@ -277,4 +295,7 @@ textarea {
 
 #debriefing-box{
 	margin: 80px auto;
+}
+.debriefing-area {
+	margin: 30px 0 0 0;
 }
