@@ -1,0 +1,19 @@
+{
+  "name": "js-expt-toolbox",
+  "version": "1.0.0",
+  "description": "This is a tiny js/jQuery toolbox for psychological experiment by Yi-Chia Chen.\r You may find more resource I collected for online experiment here: https://ycc.vision/Resource/\r The example experiment can be viewed here: https://cvlstudy.psych.ucla.edu/ycc/tool/example/?id=1234",
+  "main": "func.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yi-Chia-Chen/js-expt-toolbox.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yi-Chia-Chen/js-expt-toolbox/issues"
+  },
+  "homepage": "https://github.com/Yi-Chia-Chen/js-expt-toolbox#readme"
+}
