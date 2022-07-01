@@ -9,8 +9,8 @@ class Task {
             dataFile: '',
             stimPath: 'media/',
             savingDir: 'data/testing',
-            trialList: [],
             pracList: [],
+            trialList: [],
             intertrialInterval: 0.5,
             updateFunc: false,
             trialFunc: false,
@@ -19,7 +19,9 @@ class Task {
         }, options);
         this.blockNum = 0;
         this.trialNum = -this.pracTrialN;
-        this.allData = list_to_formatted_string(this.titles);
+        this.pracList = this.pracList.slice();
+        this.trialList = this.trialList.slice();
+        this.allData = list_to_formatted_string(this.titles.slice());
         this.complete = false;
         this.getSubjectData();
     }

@@ -19,9 +19,10 @@ function capitalize(s) {
 
 function list_to_formatted_string(data_list, divider) {
     divider = (divider === undefined) ? '\t' : divider;
+    let list = data_list.slice();
     let string = '';
-    let last = data_list.pop();
-    for (let d of data_list) {
+    let last = list.pop();
+    for (let d of list) {
         string += d + divider;
     }
     string += last + '\n';
@@ -522,7 +523,7 @@ function check_fully_in_view(el) {
     return (TOP >= 0) && (BOTTOM <= H) && (LEFT >= 0) && (RIGHT <= W);
 }
 
-function maximize_window() {
+function enter_fullscreen() {
     let el = document.documentElement;
     if (el.requestFullscreen) {
         el.requestFullscreen();
@@ -535,7 +536,7 @@ function maximize_window() {
     }
 }
 
-function exit_maximize_window() {
+function exit_fullscreen() {
     let el = document;
     if (el.exitFullscreen) {
         el.exitFullscreen();

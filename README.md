@@ -4,6 +4,7 @@ You may find more resource I collected for online experiment here: https://ycc.v
 The example experiment can be viewed here: https://cvlstudy.psych.ucla.edu/ycc/tool/example/?id=1234
 
 ## Version History
+- 5.0.1 (2022.07.01): Make sure functions and methods are using duplicated lists
 - 5.0.0b (2022.01.18): Break down expt.js to subj.js, instr.js, & task.js
                        Fix function and class naming
                        Update example experiment
