@@ -283,9 +283,9 @@ function concat_duplicated_array(arr, repeat_n) {
     return new_arr;
 }
 
-function create_random_repeat_beginning_list(stim_list, repeat_trial_n) {
+function create_random_repeat_at_list_end(stim_list, repeat_trial_n) {
     const REPEAT_LIST = shuffle_array(stim_list.slice()).splice(0, repeat_trial_n);
-    return REPEAT_LIST.concat(stim_list);
+    return stim_list.concat(REPEAT_LIST);
 }
 
 function recursive_combine(current_factor, remain_factor_list, conditions) {
@@ -416,42 +416,42 @@ function load_img(index, stim_path, img_list, after_func) {
 
 function load_sounds(index, stim_path, sound_list, after_func) {
     if (index >= sound_list.length) {
+        after_func();
         return;
     }
+
     const SOUND = new Audio();
     SOUND.src = stim_path + sound_list[index];
+    const START_TIME = Date.now();
+    let reload_num = 0;
+    let check_loading = window.setInterval(check_state, 20);
 
     function check_state() {
         if (SOUND.readyState == 4) {
             clearInterval(check_loading);
-            if (index < sound_list.length - 1) {
-                load_sounds(index + 1, stim_path, sound_list, after_func);
-            } else {
-                after_func();
-            }
+            load_next_sound_or_run_after_func(index+1, stim_path, sound_list, after_func);
         } else {
-            let current_time = Date.now();
-            let current_duration = (current_time - START_TIME) / 1000; // in second
+            let current_duration = (Date.now() - START_TIME) / 1000;
             if (current_duration > 2) {
                 clearInterval(check_loading);
-                if (reload_num > 3) { // giving up
-                    if (index < sound_list.length - 1) {
-                        load_sounds(index + 1, stim_path, sound_list, after_func);
-                    } else {
-                        after_func();
-                    }
+                if (reload_num > 2) { // giving up
+                    load_next_sound_or_run_after_func(index+1, stim_path, sound_list, after_func);
                 } else { // try reloading again
                     reload_num++;
                     SOUND.load();
-                    check_loading = window.setInterval(check_state, 20); // update progress every intervalD ms
+                    check_loading = window.setInterval(check_state, 20);
                 }
             }
         }
     }
+}
 
-    const START_TIME = Date.now();
-    let reload_num = 0;
-    let check_loading = window.setInterval(check_state, 20); // update progress every intervalD ms
+function load_next_sound_or_run_after_func(index, stim_path, sound_list, after_func) {
+    if (index < sound_list.length) {
+        load_sounds(index, stim_path, sound_list, after_func);
+    } else {
+        after_func();
+    }
 }
 
 function buffer_video(buffer_element, filename, error_func, after_func) {

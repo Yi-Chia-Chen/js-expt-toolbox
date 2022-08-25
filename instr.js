@@ -16,6 +16,7 @@ class Instructions {
 
     start() {
         this.advance();
+        this.startTimer();
     }
 
     advance() {
@@ -29,26 +30,35 @@ class Instructions {
         if (post_function !== false) {
             post_function();
         }
-        this.startTime = Date.now();
     }
 
     next() {
+        this.endTimer()
         this.saveReadingTime();
         this.textBox.hide();
         this.index += 1;
         if (this.index < this.arr.length) {
             this.advance();
+            this.startTimer();
         }
     }
 
+    startTimer() {
+        this.startTime = Date.now();
+    }
+
+    endTimer() {
+        this.endTime = Date.now();
+        this.readingDuration = (this.endTime - this.startTime)/1000;
+    }
+
     saveReadingTime() {
-        var readingTime = (Date.now() - this.startTime)/1000;
         if (typeof(this.readingTimes[this.index])=='undefined'){
-            this.readingTimes[this.index] = readingTime;
+            this.readingTimes[this.index] = this.readingDuration;
         }
         else{
-            if (this.readingTimes[this.index] < readingTime){
-                this.readingTimes[this.index] = readingTime;
+            if (this.readingTimes[this.index] < this.readingDuration){
+                this.readingTimes[this.index] = this.readingDuration;
             }
         }
     }

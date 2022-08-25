@@ -33,7 +33,7 @@ class Task {
     }
 
     run() {
-        var that = this;
+        let that = this;
         if (this.progressInfo) {
             this.updateProgress();
         }
@@ -67,11 +67,11 @@ class Task {
     }
 
     end(resp) {
-        var currentTime = Date.now();
+        let currentTime = Date.now();
         this.rt = (currentTime - this.startTime) / 1000;
         this.response = resp;
         if (this.trialNum > 0) {
-            var dataList = list_from_attribute_names(this, this.titles);
+            let dataList = list_from_attribute_names(this, this.titles);
             this.allData += list_to_formatted_string(dataList);
         }
         if (this.trialNum < this.trialN) {
@@ -100,7 +100,7 @@ class Task {
     }
 
     save() {
-        var postData = {
+        let postData = {
             'directory_path': this.savingDir,
             'file_name': this.dataFile,
             'data': this.allData

@@ -29,7 +29,7 @@ class Subject {
     }
 
     obtainSubjNum() {
-        var that = this;
+        let that = this;
         function subj_num_update_succeeded(number) {
             that.num = number;
             that.subjNumCallback();
@@ -45,7 +45,7 @@ class Subject {
     }
 
     assignCondition() {
-        var that = this;
+        let that = this;
         const check_subj_num = function(){
             if(that.num != 'pre-post'){
                 clearInterval(interval_id);
@@ -53,22 +53,22 @@ class Subject {
                 that.conditionAssigned = true;
             }
         };
-        var interval_id = setInterval(check_subj_num, 10);
+        let interval_id = setInterval(check_subj_num, 10);
     }
 
     saveVisit() {
-        var data = 'subjNum\tstartDate\tstartTime\tid\tuserAgent\tinView\tviewportW\tviewportH\n';
+        let data = 'subjNum\tstartDate\tstartTime\tid\tuserAgent\tinView\tviewportW\tviewportH\n';
         this.viewport = this.viewportSize;
         this.inView = this.viewport['inView'];
         this.viewportW = this.viewport['w'];
         this.viewportH = this.viewport['h'];
-        var dataList = [this.num, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
+        let dataList = [this.num, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
         data += list_to_formatted_string(dataList);
         post_data(this.savingScript, { 'directory_path': this.savingDir, 'file_name': this.visitFile, 'data': data });
     }
 
     getID(get_variable) {
-        var id = get_parameters(get_variable, null);
+        let id = get_parameters(get_variable, null);
         this.validID = this.checkID(id);
         if (this.validID) {
             return id;
@@ -87,44 +87,44 @@ class Subject {
     }
 
     get phone() {
-        var md = new MobileDetect(this.userAgent);
+        let md = new MobileDetect(this.userAgent);
         return md.mobile() ? true : false;
     }
 
     get viewportSize() {
-        var w = $(window).width();
-        var h = $(window).height();
-        var inView = (w >= this.viewportMinW) && (h >= this.viewportMinH);
+        let w = $(window).width();
+        let h = $(window).height();
+        let inView = (w >= this.viewportMinW) && (h >= this.viewportMinH);
         return { 'h': h, 'w': w, 'inView': inView };
     }
 
     saveAttrition() {
-        var data = 'subjNum\tstartDate\tstartTime\tid\tuserAgent\tinView\tviewportW\tviewportH\n';
+        let data = 'subjNum\tstartDate\tstartTime\tid\tuserAgent\tinView\tviewportW\tviewportH\n';
         this.viewport = this.viewportSize;
         this.inView = this.viewport['inView'];
         this.viewportW = this.viewport['w'];
         this.viewportH = this.viewport['h'];
-        var dataList = [this.num, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
+        let dataList = [this.num, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
         data += list_to_formatted_string(dataList);
         post_data(this.savingScript, { 'directory_path': this.savingDir, 'file_name': this.attritionFile, 'data': data });
     }
 
-    submitQ() {
-        var endTimeObj = new Date();
+    submitAnswers() {
+        let endTimeObj = new Date();
         this.endTime = format_time(endTimeObj, 'UTC', ':', true);
         this.duration = (endTimeObj - this.dateObj) / 60000;
-        var dataList = list_from_attribute_names(this, this.titles);
+        let dataList = list_from_attribute_names(this, this.titles);
         this.data += list_to_formatted_string(dataList);
         post_data(this.savingScript, { 'directory_path': this.savingDir, 'file_name': this.subjFile, 'data': this.data });
     }
 
     detectVisibilityStart() {
-        var that = this;
+        let that = this;
         document.addEventListener('visibilitychange', that.handleVisibilityChange);
     }
 
     detectVisibilityEnd() {
-        var that = this;
+        let that = this;
         document.removeEventListener('visibilitychange', that.handleVisibilityChange);
     }
 

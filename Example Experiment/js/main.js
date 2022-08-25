@@ -41,7 +41,7 @@ const ALL_IMG_LIST = RATING_PRACTICE_LIST.concat(RATING_LIST).concat(INSTR_IMG_L
 
 
 // object variables
-var subj, instr, task;
+let subj, instr, task;
 
 // criteria
 const VIEWPORT_MIN_W = 800;
@@ -128,7 +128,7 @@ function submit_debriefing_questions() {
         subj.quizAttemptN = instr.quizAttemptN['onlyQ'];
         subj.instrReadingTimes = JSON.stringify(instr.readingTimes);
         subj.quickReadingPageN = Object.values(instr.readingTimes).filter(d => d < INSTR_READING_TIME_MIN).length;
-        subj.submitQ();
+        subj.submitAnswers();
         $('#questions-box').hide();
         exit_maximize_window();
         allow_selection();
@@ -175,7 +175,7 @@ function go_to_completion_page() {
     window.location.href = COMPLETION_URL+'?id='+subj.id;
 }
 
-var subj_options = {
+let subj_options = {
     titles: SUBJ_TITLES,
     viewportMinW: VIEWPORT_MIN_W,
     viewportMinH: VIEWPORT_MIN_H,
@@ -260,7 +260,7 @@ function show_consent() {
     });
 }
 
-var instr_options = {
+let instr_options = {
     textBox: $('#instr-box'),
     textElement: $('#instr-text'),
     arr: INSTRUCTIONS,
@@ -311,7 +311,7 @@ function rating() {
             $('.rating-button').unbind('mouseup');
             task.inView = check_fully_in_view($('#test-img'));
             $('#test-img').hide();
-            var target = $(event.target).closest('.rating-button');
+            let target = $(event.target).closest('.rating-button');
             task.end(target.attr('id'));
         }
     );
@@ -324,7 +324,7 @@ function end_task() {
     task.save();
 }
 
-var task_options = {
+let task_options = {
     titles: TASK_TITLES,
     pracTrialN: RATING_PRACTICE_TRIAL_N,
     trialN: RATING_TRIAL_N,
