@@ -48,28 +48,6 @@ const VIEWPORT_MIN_W = 800;
 const VIEWPORT_MIN_H = 600;
 const INSTR_READING_TIME_MIN = 0.3;
 
-
-// ########  ########    ###    ########  ##    ##
-// ##     ## ##         ## ##   ##     ##  ##  ##
-// ##     ## ##        ##   ##  ##     ##   ####
-// ########  ######   ##     ## ##     ##    ##
-// ##   ##   ##       ######### ##     ##    ##
-// ##    ##  ##       ##     ## ##     ##    ##
-// ##     ## ######## ##     ## ########     ##
-
-$(document).ready(function() {
-    subj = new Subject(subj_options);
-    subj.id = subj.getID(ID_GET_VARIABLE_NAME);
-    subj.saveVisit();
-    if (subj.phone) {
-        halt_experiment('It seems that you are using a touchscreen device or a phone. Please use a laptop or desktop instead.<br /><br />If you believe you have received this message in error, please contact the experimenter at yichiachen@ucla.edu<br /><br />Otherwise, please switch to a laptop or a desktop computer for this experiment.');
-    } else if (subj.validID){
-        load_img(0, STIM_PATH, ALL_IMG_LIST);
-        instr = new Instructions(instr_options);
-        instr.start();
-    }
-});
-
 function halt_experiment(explanation) {
     $('.page-box').hide();
     $('#instr-text').html(explanation);
@@ -110,6 +88,20 @@ const SUBJ_TITLES = [
     'viewportW',
     'viewportH'
 ];
+
+let subj_options = {
+    titles: SUBJ_TITLES,
+    viewportMinW: VIEWPORT_MIN_W,
+    viewportMinH: VIEWPORT_MIN_H,
+    subjNumCallback: update_task_object_subj_num,
+    subjNumScript: SUBJ_NUM_SCRIPT,
+    savingScript: SAVING_SCRIPT,
+    subjNumFile: SUBJ_NUM_FILE,
+    visitFile: VISIT_FILE,
+    attritionFile: ATTRITION_FILE,
+    subjFile: SUBJ_FILE,
+    savingDir: SAVING_DIR
+};
 
 function update_task_object_subj_num() {
     if (typeof task !== 'undefined'){
@@ -175,21 +167,6 @@ function go_to_completion_page() {
     window.location.href = COMPLETION_URL+'?id='+subj.id;
 }
 
-let subj_options = {
-    titles: SUBJ_TITLES,
-    viewportMinW: VIEWPORT_MIN_W,
-    viewportMinH: VIEWPORT_MIN_H,
-    subjNumCallback: update_task_object_subj_num,
-    subjNumScript: SUBJ_NUM_SCRIPT,
-    savingScript: SAVING_SCRIPT,
-    subjNumFile: SUBJ_NUM_FILE,
-    visitFile: VISIT_FILE,
-    attritionFile: ATTRITION_FILE,
-    subjFile: SUBJ_FILE,
-    savingDir: SAVING_DIR
-};
-
-
 // #### ##    ##  ######  ######## ########
 //  ##  ###   ## ##    ##    ##    ##     ##
 //  ##  ####  ## ##          ##    ##     ##
@@ -201,7 +178,7 @@ let subj_options = {
 const INSTRUCTIONS = [
     [false, false, 'Thank you very much!<br /><br />This study will take about 10 minutes. Please read the instructions carefully, and avoid using the refresh or back buttons.'],
     [show_maximize_window, false, 'For this study to work, the webpage will automatically switch to the full-screen view on the next page. Please stay in the full screen mode until the study automatically switches out from it.'],
-    [hide_instr_img, maximize_window, 'In this study, we will show you '+RATING_INSTR_TRIAL_N+' images, one at a time. We are interested in how positive you feel looking at each image.'],
+    [hide_instr_img, enter_fullscreen, 'In this study, we will show you '+RATING_INSTR_TRIAL_N+' images, one at a time. We are interested in how positive you feel looking at each image.'],
     [false, false, 'Six options will be available below the images as six buttons. Just click one of the options based on your experience.'],
     [false, false, "The next page is a quick instruction quiz. (It's very simple!)"],
     [false, show_instr_question, ''],
@@ -323,7 +300,6 @@ function end_task() {
     $('#questions-box').show();
     task.save();
 }
-
 let task_options = {
     titles: TASK_TITLES,
     pracTrialN: RATING_PRACTICE_TRIAL_N,
@@ -339,4 +315,28 @@ let task_options = {
     trialFunc: rating,
     endExptFunc: end_task,
     progressInfo: true
-}
+};
+
+
+// ########  ########    ###    ########  ##    ##
+// ##     ## ##         ## ##   ##     ##  ##  ##
+// ##     ## ##        ##   ##  ##     ##   ####
+// ########  ######   ##     ## ##     ##    ##
+// ##   ##   ##       ######### ##     ##    ##
+// ##    ##  ##       ##     ## ##     ##    ##
+// ##     ## ######## ##     ## ########     ##
+
+$(document).ready(function() {
+    subj = new Subject(subj_options);
+    subj.id = subj.getID(ID_GET_VARIABLE_NAME);
+    subj.saveVisit();
+    if (subj.phone) {
+        halt_experiment('It seems that you are using a touchscreen device or a phone. Please use a laptop or desktop instead.<br /><br />If you believe you have received this message in error, please contact the experimenter at yichiachen@ucla.edu<br /><br />Otherwise, please switch to a laptop or a desktop computer for this experiment.');
+    } else if (subj.validID){
+        load_img(0, STIM_PATH, ALL_IMG_LIST);
+        instr = new Instructions(instr_options);
+        instr.start();
+    } else {
+        halt_experiment('LINK ID ERROR: Please visit the experiment page again from the link provided on the website you signed up for the experiment. If you believe you have received this message in error, please contact the experimenter at yichiachen@ucla.edu  .');
+    }
+});

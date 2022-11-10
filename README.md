@@ -5,6 +5,9 @@ The example experiment can be viewed here: https://cvlstudy.psych.ucla.edu/ycc/t
 
 
 ## Version History
+* 5.0.3 (2022.11.09):
+    - Fix a few bugs
+
 * 5.0.2 (2022.08.25):
     - Replace var to let
     - Add repeat trial at the end of the trial list rather than the beginning
