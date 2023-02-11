@@ -17,7 +17,7 @@ function capitalize(s) {
     }
 }
 
-function list_to_formatted_string(data_list, divider) {
+function array_to_formatted_string(data_list, divider) {
     divider = (divider === undefined) ? '\t' : divider;
     let list = data_list.slice();
     let string = '';
@@ -117,9 +117,9 @@ function polar_to_cartesian(r, theta) {
 //  ######   ########  #######  ##     ## ########    ##    ##     ##    ##
 
 function distance_between_points(point_a, point_b){
-    const X_DIFF = point_a[0] - point_b[0];
-    const Y_DIFF = point_a[1] - point_b[1];
-    return vector_length(X_DIFF, Y_DIFF);
+    let x_diff = point_a[0] - point_b[0];
+    let y_diff = point_a[1] - point_b[1];
+    return vector_length(x_diff, y_diff);
 }
 
 function vector_length(x_diff, y_diff) {
@@ -131,19 +131,19 @@ function midpoint_of_two_points(point_1, point_2) {
 }
 
 function slope_from_points(point_1, point_2) {
-    const X_1 = point_1[0];
-    const Y_1 = point_1[1];
-    const X_2 = point_2[0];
-    const Y_2 = point_2[1];
-    return (Y_2 - Y_1)/(X_2 - X_1);
+    let x_1 = point_1[0];
+    let y_1 = point_1[1];
+    let x_2 = point_2[0];
+    let y_2 = point_2[1];
+    return (y_2 - y_1)/(x_2 - x_1);
 }
 
 function y_intercept_from_points(point_1, point_2) {
-    const X_1 = point_1[0];
-    const Y_1 = point_1[1];
-    const X_2 = point_2[0];
-    const Y_2 = point_2[1];
-    return (X_2*Y_1 - X_1*Y_2)/(X_2 - X_1);
+    let x_1 = point_1[0];
+    let y_1 = point_1[1];
+    let x_2 = point_2[0];
+    let y_2 = point_2[1];
+    return (x_2*y_1 - x_1*y_2)/(x_2 - x_1);
 }
 
 function line_angle_to_x_axis(slope) {
@@ -151,53 +151,53 @@ function line_angle_to_x_axis(slope) {
 }
 
 function intersection_of_two_lines(slope_1, y_intercept_1, slope_2, y_intercept_2) {
-    const INTERSECTION_X = (y_intercept_2-y_intercept_1) / (slope_1-slope_2);
-    const INTERSECTION_Y = (slope_1*y_intercept_2 - slope_2*y_intercept_1) / (slope_1-slope_2);
-    return [INTERSECTION_X, INTERSECTION_Y];
+    let intersection_x = (y_intercept_2-y_intercept_1) / (slope_1-slope_2);
+    let intersection_y = (slope_1*y_intercept_2 - slope_2*y_intercept_1) / (slope_1-slope_2);
+    return [intersection_x, intersection_y];
 }
 
 function vertical_line_intersection_from_point_to_line(point_0, slope, y_intercept) {
-    const X_0 = point_0[0];
-    return [X_0, slope*X_0+y_intercept];
+    let x_0 = point_0[0];
+    return [x_0, slope*x_0+y_intercept];
 }
 
 function horizontal_line_intersection_from_point_to_line(point_0, slope, y_intercept) {
-    const Y_0 = point_0[1];
-    return [(Y_0-y_intercept)/slope, Y_0];
+    let y_0 = point_0[1];
+    return [(y_0-y_intercept)/slope, y_0];
 }
 
 function point_to_line_distance(point_0, slope, y_intercept) {
-    const INTERSECTION_X_POINT = vertical_line_intersection_from_point_to_line(point_0, slope, y_intercept);
-    const INTERSECTION_Y_POINT = horizontal_line_intersection_from_point_to_line(point_0, slope, y_intercept);
-    const HYPOTENUSE = distance_between_points(INTERSECTION_X_POINT, INTERSECTION_Y_POINT);
-    return INTERSECTION_X_POINT*INTERSECTION_Y_POINT/HYPOTENUSE;
+    let intersection_x_point = vertical_line_intersection_from_point_to_line(point_0, slope, y_intercept);
+    let intersection_y_point = horizontal_line_intersection_from_point_to_line(point_0, slope, y_intercept);
+    let hypotenuse = distance_between_points(intersection_x_point, intersection_y_point);
+    return intersection_x_point*intersection_y_point/hypotenuse;
 }
 
 function perpendicular_line_of_a_line_passing_a_point(point_0, slope) {
-    const PERPENDICULAR_SLOPE = -1/slope
-    const Y_INTERCEPT = point_0[1] - PERPENDICULAR_SLOPE*point_0[0];
-    return [PERPENDICULAR_SLOPE, Y_INTERCEPT];
+    let perpendicular_slope = -1/slope
+    let y_intercept = point_0[1] - perpendicular_slope*point_0[0];
+    return [perpendicular_slope, y_intercept];
 }
 
 function foot_of_perpendicular(point_0, slope, y_intercept) {
-    const PERPENDICULAR_LINE = perpendicular_line_of_a_line_passing_a_point(point_0, slope)
-    return intersection_of_two_lines(slope, y_intercept, PERPENDICULAR_LINE[0], PERPENDICULAR_LINE[1]);
+    let perpendicular_line = perpendicular_line_of_a_line_passing_a_point(point_0, slope)
+    return intersection_of_two_lines(slope, y_intercept, perpendicular_line[0], perpendicular_line[1]);
 }
 
 function reflection_point_through_a_line(point_0, slope, y_intercept) {
-    const FOOT = foot_of_perpendicular(point_0, slope, y_intercept);
-    const FOOT_X = FOOT[0];
-    const FOOT_Y = FOOT[1];
-    const X_0 = point_0[0];
-    const Y_0 = point_0[1];
-    return [2*FOOT_X - X_0, 2*FOOT_Y - Y_0];
+    let foot = foot_of_perpendicular(point_0, slope, y_intercept);
+    let foot_x = foot[0];
+    let foot_y = foot[1];
+    let x_0 = point_0[0];
+    let y_0 = point_0[1];
+    return [2*foot_x - x_0, 2*foot_y - y_0];
 }
 
 function perpendicular_bisector(point_1, point_2) {
-    const MIDPOINT = midpoint_of_two_points(point_1, point_2);
-    const SLOPE = -1/slope_from_points(point_1, point_2);
-    const Y_INTERCEPT = MIDPOINT[1] - SLOPE*MIDPOINT[0];
-    return [SLOPE, Y_INTERCEPT];
+    let midpoint = midpoint_of_two_points(point_1, point_2);
+    let slope = -1/slope_from_points(point_1, point_2);
+    let y_intercept = midpoint[1] - slope*midpoint[0];
+    return [slope, y_intercept];
 }
 
 
@@ -283,9 +283,9 @@ function concat_duplicated_array(arr, repeat_n) {
     return new_arr;
 }
 
-function create_random_repeat_at_list_end(stim_list, repeat_trial_n) {
-    const REPEAT_LIST = shuffle_array(stim_list.slice()).splice(0, repeat_trial_n);
-    return stim_list.concat(REPEAT_LIST);
+function create_random_repeat_at_array_end(stim_list, repeat_trial_n) {
+    let repeat_list = shuffle_array(stim_list.slice()).splice(0, repeat_trial_n);
+    return stim_list.concat(repeat_list);
 }
 
 function recursive_combine(current_factor, remain_factor_list, conditions) {
@@ -325,10 +325,10 @@ function factorial_cond(factor_list) {
 //    ##    #### ##     ## ########
 
 function request_timeout(to_do, delay) {
-    const START_TIME = Date.now();
+    let start_time = Date.now();
     function loop() {
-        const TIME_ELAPSED = Date.now() - START_TIME;
-        if (TIME_ELAPSED >= delay) {
+        let time_elapsed = Date.now() - start_time;
+        if (time_elapsed >= delay) {
             to_do();
         } else {
             request_id = requestAnimationFrame(loop);
@@ -357,14 +357,14 @@ function register_cancel_function (func) {
 // ##     ## ########  ##### ## ########  #######   ######     ##
 
 function get_parameters(var_name, default_value) {
-    const REGEX_STRING = "[\?&]" + var_name + "=([^&#]*)";
-    const REGEX = new RegExp(REGEX_STRING);
-    const URL = location.href;
-    const RESULTS = REGEX.exec(URL);
-    if (RESULTS == null) {
+    let regex_string = "[\?&]" + var_name + "=([^&#]*)";
+    let regex = new RegExp(regex_string);
+    let url = location.href;
+    let results = regex.exec(url);
+    if (results == null) {
         return default_value;
     } else {
-        return RESULTS[1];
+        return results[1];
     }
 }
 
@@ -390,7 +390,7 @@ function post_data(page, data, success_func, error_callback) {
 // ##       ##     ## ##     ## ##     ##  ##  ##   ### ##    ##
 // ########  #######  ##     ## ########  #### ##    ##  ######
 
-function add_prefix_to_list_of_string(strings, prefix) {
+function add_prefix_to_array_of_string(strings, prefix) {
     let output_list = [];
     for (let s of strings) {
         output_list.push(prefix+s);
@@ -403,15 +403,15 @@ function load_img(index, stim_path, img_list, after_func) {
     if (index >= img_list.length) {
         return;
     }
-    const IMAGE = new Image();
+    let image = new Image();
     if (index < img_list.length - 1) {
-        IMAGE.onload = function() {
+        image.onload = function() {
             load_img(index + 1, stim_path, img_list, after_func);
         };
     } else {
-        IMAGE.onload = after_func;
+        image.onload = after_func;
     }
-    IMAGE.src = stim_path + img_list[index];
+    image.src = stim_path + img_list[index];
 }
 
 function load_sounds(index, stim_path, sound_list, after_func) {
@@ -420,25 +420,25 @@ function load_sounds(index, stim_path, sound_list, after_func) {
         return;
     }
 
-    const SOUND = new Audio();
-    SOUND.src = stim_path + sound_list[index];
-    const START_TIME = Date.now();
+    let sound = new Audio();
+    sound.src = stim_path + sound_list[index];
+    let start_time = Date.now();
     let reload_num = 0;
     let check_loading = window.setInterval(check_state, 20);
 
     function check_state() {
-        if (SOUND.readyState == 4) {
+        if (sound.readyState == 4) {
             clearInterval(check_loading);
             load_next_sound_or_run_after_func(index+1, stim_path, sound_list, after_func);
         } else {
-            let current_duration = (Date.now() - START_TIME) / 1000;
+            let current_duration = (Date.now() - start_time) / 1000;
             if (current_duration > 2) {
                 clearInterval(check_loading);
                 if (reload_num > 2) { // giving up
                     load_next_sound_or_run_after_func(index+1, stim_path, sound_list, after_func);
                 } else { // try reloading again
                     reload_num++;
-                    SOUND.load();
+                    sound.load();
                     check_loading = window.setInterval(check_state, 20);
                 }
             }
@@ -457,19 +457,19 @@ function load_next_sound_or_run_after_func(index, stim_path, sound_list, after_f
 function buffer_video(buffer_element, filename, error_func, after_func) {
     error_func = (error_func === undefined) ? function() { return; } : error_func;
     after_func = (after_func === undefined) ? function() { return; } : after_func;
-    const REQUEST = new XMLHttpRequest();
-    REQUEST.open('GET', filename, true);
-    REQUEST.responseType = 'blob';
-    REQUEST.onload = function() {
+    let request = new XMLHttpRequest();
+    request.open('GET', filename, true);
+    request.responseType = 'blob';
+    request.onload = function() {
         if (this.status === 200) {
-            const VIDEO_BLOB = this.response;
-            const VIDEO = URL.createObjectURL(VIDEO_BLOB);
-            buffer_element.src = VIDEO;
+            let video_blob = this.response;
+            let video = URL.createObjectURL(video_blob);
+            buffer_element.src = video;
             after_func();
         }
     };
-    REQUEST.onerror = error_func;
-    REQUEST.send();
+    request.onerror = error_func;
+    request.send();
 }
 
 
@@ -481,8 +481,7 @@ function buffer_video(buffer_element, filename, error_func, after_func) {
 // ##    ## ##     ## ##   ###    ##    ##       ##   ###    ##
 //  ######   #######  ##    ##    ##    ######## ##    ##    ##
 
-
-function append_list_of_img(img_path_list, img_box) {
+function append_array_of_img(img_path_list, img_box) {
     let img;
     for (let p of img_path_list) {
         img = $(document.createElement('img'));
@@ -491,7 +490,7 @@ function append_list_of_img(img_path_list, img_box) {
     }
 }
 
-function list_from_attribute_names(obj, string_list) {
+function array_from_attribute_names(obj, string_list) {
     let list = []
     for (let s of string_list) {
         list.push(obj[s]);
@@ -512,15 +511,15 @@ function check_if_responded(open_ended_list, choice_list) {
 
 function check_fully_in_view(el) {
     el = el.get(0);
-    const RECT = el.getBoundingClientRect();
-    const TOP = RECT.top;
-    const BOTTOM = RECT.bottom;
-    const LEFT = RECT.left;
-    const RIGHT = RECT.right;
+    let rect = el.getBoundingClientRect();
+    let top = rect.top;
+    let bottom = rect.bottom;
+    let left = rect.left;
+    let right = rect.right;
 
-    const W = $(window).width();
-    const H = $(window).height();
-    return (TOP >= 0) && (BOTTOM <= H) && (LEFT >= 0) && (RIGHT <= W);
+    let W = $(window).width();
+    let H = $(window).height();
+    return (top >= 0) && (bottom <= H) && (left >= 0) && (right <= W);
 }
 
 function enter_fullscreen() {

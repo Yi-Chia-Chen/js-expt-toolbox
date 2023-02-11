@@ -4,7 +4,18 @@ You may find more resource I collected for online experiment here: https://ycc.v
 The example experiment can be viewed here: https://cvlstudy.psych.ucla.edu/ycc/tool/example/?id=1234
 
 
+## Planned Improvements
+* End the experiment if people refresh after a certain point in formal experiment (Wait for Safari to support PerformanceNavigationTiming)
+* Add method to restart a block
+* Write unit tests
+
+
 ## Version History
+* 5.1.0 (2023.02.10):
+    - The next trial was not properly fetched before, it's fixed now
+    - Remove UserAgent collection
+    - Integrate rest method in task.js
+
 * 5.0.3 (2022.11.09):
     - Fix a few bugs
 
@@ -107,9 +118,3 @@ The example experiment can be viewed here: https://cvlstudy.psych.ucla.edu/ycc/t
 
 * 1.0.0 (2019.06.13):
     - First version
-
-
-## Planned Improvements
-* End the experiment if people refresh after a certain point in formal experiment (Wait for Safari to support PerformanceNavigationTiming)
-* Add method to restart a block
-* Write unit tests

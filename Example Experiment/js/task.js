@@ -15,15 +15,31 @@ class Task {
             updateFunc: false,
             trialFunc: false,
             endExptFunc: false,
-            progressInfo: false
+            restN: 0,
+            progressInfo: false,
+            restBoxElement: $('#rest-box'),
+            restTextElement: $('#rest-text'),
+            restCallback: () => void 0,
+            restCallbackParameters: undefined
         }, options);
         this.blockNum = 0;
         this.trialNum = -this.pracTrialN;
+        this.totalTrialN = this.pracTrialN + this.trialN;
         this.pracList = this.pracList.slice();
         this.trialList = this.trialList.slice();
-        this.allData = list_to_formatted_string(this.titles.slice());
+        this.allData = array_to_formatted_string(this.titles.slice());
         this.complete = false;
+        this.restTrialNum = findRestTrialNum();
         this.getSubjectData();
+    }
+
+    findRestTrialNum() {
+        if (this.restN == 0) {
+            this.restTrialNum = [];
+        } else {
+            let trial_count_before_rest = Math.floor(this.totalTrialN / (this.restN+1));
+            this.restTrialNum = range(1, this.restN+1).map(function(x) { return x*trial_count_before_rest; })
+        }
     }
 
     getSubjectData() {
@@ -62,7 +78,7 @@ class Task {
         if (last){
             return false;
         } else {
-            return formal ? this.trialList[this.trialList.length - 1] : this.pracList[this.pracList.length - 1];
+            return formal ? this.trialList[0] : this.pracList[0];
         }
     }
 
@@ -71,10 +87,13 @@ class Task {
         this.rt = (currentTime - this.startTime) / 1000;
         this.response = resp;
         if (this.trialNum > 0) {
-            let dataList = list_from_attribute_names(this, this.titles);
-            this.allData += list_to_formatted_string(dataList);
+            let dataList = array_from_attribute_names(this, this.titles);
+            this.allData += array_to_formatted_string(dataList);
         }
-        if (this.trialNum < this.trialN) {
+
+        if (this.restTrialNum.includes(this.trialNum)) {
+            this.rest();
+        } else if (this.trialNum < this.trialN) {
             this.run();
         } else {
             this.complete = true;
@@ -82,18 +101,18 @@ class Task {
         }
     }
 
-    rest(box_element, text_element, callback, callback_parameters) {
-        text_element.html('You are done with '+ this.progress + '% of the study!<br /><br />Take a short break now and hit space to continue whenever you are ready.')
-        box_element.show();
+    rest() {
+        this.restTextElement.html('You are done with '+ this.progress + '% of the study!<br /><br />Take a short break now and hit space to continue whenever you are ready.')
+        this.restBoxElement.show();
         $(document).keyup(function(e) {
             if (e.key == ' ') {
                 $(document).off('keyup');
-                box_element.hide();
-                if (typeof callback_parameters == 'undefined') {
-                    callback();
+                this.restBoxElement.hide();
+                if (typeof this.restCallbackParameters == 'undefined') {
+                    this.restCallback();
                 }
                 else {
-                    callback(callback_parameters);
+                    this.restCallback(this.restCallbackParameters);
                 }
             }
         });

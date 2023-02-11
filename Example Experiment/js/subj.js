@@ -19,11 +19,10 @@ class Subject {
         if (this.num == 'pre-post') {
             this.obtainSubjNum();
         }
-        this.data = list_to_formatted_string(this.titles);
+        this.data = array_to_formatted_string(this.titles);
         this.dateObj = new Date();
         this.date = format_date(this.dateObj, 'UTC', '-', true);
         this.startTime = format_time(this.dateObj, 'UTC', ':', true);
-        this.userAgent = window.navigator.userAgent;
         this.hiddenCount = 0;
         this.hiddenDurations = [];
     }
@@ -57,13 +56,13 @@ class Subject {
     }
 
     saveVisit() {
-        let data = 'subjNum\tstartDate\tstartTime\tid\tuserAgent\tinView\tviewportW\tviewportH\n';
+        let data = 'subjNum\tstartDate\tstartTime\tid\tinView\tviewportW\tviewportH\n';
         this.viewport = this.viewportSize;
         this.inView = this.viewport['inView'];
         this.viewportW = this.viewport['w'];
         this.viewportH = this.viewport['h'];
-        let dataList = [this.num, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
-        data += list_to_formatted_string(dataList);
+        let dataList = [this.num, this.date, this.startTime, this.id, this.inView, this.viewportW, this.viewportH];
+        data += array_to_formatted_string(dataList);
         post_data(this.savingScript, { 'directory_path': this.savingDir, 'file_name': this.visitFile, 'data': data });
     }
 
@@ -86,11 +85,6 @@ class Subject {
         return valid_id;
     }
 
-    get phone() {
-        let md = new MobileDetect(this.userAgent);
-        return md.mobile() ? true : false;
-    }
-
     get viewportSize() {
         let w = $(window).width();
         let h = $(window).height();
@@ -99,13 +93,13 @@ class Subject {
     }
 
     saveAttrition() {
-        let data = 'subjNum\tstartDate\tstartTime\tid\tuserAgent\tinView\tviewportW\tviewportH\n';
+        let data = 'subjNum\tstartDate\tstartTime\tid\tinView\tviewportW\tviewportH\n';
         this.viewport = this.viewportSize;
         this.inView = this.viewport['inView'];
         this.viewportW = this.viewport['w'];
         this.viewportH = this.viewport['h'];
-        let dataList = [this.num, this.date, this.startTime, this.id, this.userAgent, this.inView, this.viewportW, this.viewportH];
-        data += list_to_formatted_string(dataList);
+        let dataList = [this.num, this.date, this.startTime, this.id, this.inView, this.viewportW, this.viewportH];
+        data += array_to_formatted_string(dataList);
         post_data(this.savingScript, { 'directory_path': this.savingDir, 'file_name': this.attritionFile, 'data': data });
     }
 
@@ -113,8 +107,8 @@ class Subject {
         let endTimeObj = new Date();
         this.endTime = format_time(endTimeObj, 'UTC', ':', true);
         this.duration = (endTimeObj - this.dateObj) / 60000;
-        let dataList = list_from_attribute_names(this, this.titles);
-        this.data += list_to_formatted_string(dataList);
+        let dataList = array_from_attribute_names(this, this.titles);
+        this.data += array_to_formatted_string(dataList);
         post_data(this.savingScript, { 'directory_path': this.savingDir, 'file_name': this.subjFile, 'data': this.data });
     }
 

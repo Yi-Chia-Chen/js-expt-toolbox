@@ -19,34 +19,33 @@ const SUBJ_NUM_FILE = 'subjNum_' + EXPERIMENT_NAME + '.txt';
 const ATTRITION_FILE = 'attrition_' + EXPERIMENT_NAME + '.txt';
 const RATING_FILE = 'rating_' + EXPERIMENT_NAME + '.txt';
 const SUBJ_FILE = 'subj_' + EXPERIMENT_NAME + '.txt';
-const SAVING_DIR = FORMAL ? '/var/www-data-experiments/cvlstudy_data/YCC/example'+EXPERIMENT_NAME+'/formal' : '/var/www-data-experiments/cvlstudy_data/AV/'+EXPERIMENT_NAME+'/testing';
+const SAVING_DIR = FORMAL ? '/var/www-data-experiments/cvlstudy_data/YCC/example'+EXPERIMENT_NAME+'/formal' : '/var/www-data-experiments/cvlstudy_data/YCC/example'+EXPERIMENT_NAME+'/testing';
 const ID_GET_VARIABLE_NAME = 'id';
 const COMPLETION_URL = 'https://ycc.vision/';
 
 // stimuli
 const STIM_PATH = 'media/';
-const RATING_PRACTICE_LIST = ['prac.jpg'];
-const RATING_PRACTICE_TRIAL_N = RATING_PRACTICE_LIST.length;
-const RATING_LIST = [
+const PRACTICE_LIST = ['prac.jpg'];
+const PRACTICE_TRIAL_N = PRACTICE_LIST.length;
+const IMG_LIST = [
     'eating_alone.jpg', 'eating_group.jpg',
     'working_alone.jpg', 'working_group.jpg',
     'interviewing_alone.jpg', 'interviewing_group.jpg'
 ];
-const RATING_IMG_LIST = shuffle_array(RATING_LIST);
-const RATING_TRIAL_N = RATING_IMG_LIST.length;
-const RATING_INSTR_TRIAL_N = RATING_PRACTICE_TRIAL_N + RATING_TRIAL_N;
+const TRIAL_LIST = shuffle_array(IMG_LIST);
+const TRIAL_N = TRIAL_LIST.length;
+const INSTR_TRIAL_N = PRACTICE_TRIAL_N + TRIAL_N;
 const INTERTRIAL_INTERVAL = 0.5;
 const INSTR_IMG_LIST = ['maximize_window.png'];
-const ALL_IMG_LIST = RATING_PRACTICE_LIST.concat(RATING_LIST).concat(INSTR_IMG_LIST);
-
-
-// object variables
-let subj, instr, task;
+const ALL_IMG_LIST = PRACTICE_LIST.concat(TRIAL_LIST).concat(INSTR_IMG_LIST);
 
 // criteria
 const VIEWPORT_MIN_W = 800;
 const VIEWPORT_MIN_H = 600;
 const INSTR_READING_TIME_MIN = 0.3;
+
+// object variables
+let subj, instr, task;
 
 function halt_experiment(explanation) {
     $('.page-box').hide();
@@ -72,7 +71,6 @@ const SUBJ_TITLES = [
     'date',
     'startTime',
     'id',
-    'userAgent',
     'endTime',
     'duration',
     'quizAttemptN',
@@ -110,43 +108,51 @@ function update_task_object_subj_num() {
 }
 
 function submit_debriefing_questions() {
-    const OPEN_ENDED_ATTRIBUTE_NAMES = ['problems', 'age'];
-    const CHOICE_ATTRIBUTE_NAMES = ['serious', 'maximized', 'gender'];
-    const ALL_RESPONDED = show_hide_warnings(OPEN_ENDED_ATTRIBUTE_NAMES, CHOICE_ATTRIBUTE_NAMES);
-    if (ALL_RESPONDED) {
-        for (let a of OPEN_ENDED_ATTRIBUTE_NAMES) {
-            subj[a] = subj[a].replace(/(?:\r\n|\r|\n)/g, '<br />');
+    let open_ended_names = ['problems', 'age'];
+    let choice_names = ['serious', 'maximized', 'gender'];
+    fetch_debriefing_responses(subj, open_ended_names, choice_names);
+    let all_responded = show_hide_warnings(subj, open_ended_names, choice_names);
+    if (all_responded) {
+        for (let a of open_ended_names) {
+            subj[q] = $('#'+q).val().replace(/(?:\r\n|\r|\n)/g, '<br />');
         }
         subj.quizAttemptN = instr.quizAttemptN['onlyQ'];
         subj.instrReadingTimes = JSON.stringify(instr.readingTimes);
         subj.quickReadingPageN = Object.values(instr.readingTimes).filter(d => d < INSTR_READING_TIME_MIN).length;
         subj.submitAnswers();
         $('#questions-box').hide();
-        exit_maximize_window();
+        exit_fullscreen();
         allow_selection();
         $('#debriefing-box').show();
         $('body').scrollTop(0);
     }
 }
 
-function show_hide_warnings(open_ended_names, choice_names) {
+function fetch_debriefing_responses(obj, open_ended_names, choice_names) {
+    for (let q of open_ended_names) {
+        obj[q] = $('#'+q).val().replace(/(?:\r\n|\r|\n|\s)/g, '');
+        }
+    for (let q of choice_names) {
+        obj[q] = $('input[name='+q+']:checked').val();
+    }
+}
+
+function show_hide_warnings(obj, open_ended_names, choice_names) {
     let all_responded = true;
     for (let q of open_ended_names) {
-        subj[q] = $('#'+q).val();
-        if(!check_if_responded([subj[q]], [])){
+        if(obj[q] == ''){
             $('#'+q+'-warning').show();
-            all_responded = false;
             $('body').scrollTop(0);
-        }else{
+            all_responded = false;
+        } else{
             $('#'+q+'-warning').hide();
         }
     }
     for (let q of choice_names) {
-        subj[q] = $('input[name='+q+']:checked').val();
-        if(!check_if_responded([], [subj[q]])){
+        if(typeof obj[q] == 'undefined'){
             $('#'+q+'-warning').show();
-            all_responded = false;
             $('body').scrollTop(0);
+            all_responded = false;
         }else{
             $('#'+q+'-warning').hide();
         }
@@ -204,10 +210,10 @@ function show_instr_question() {
 }
 
 function submit_instruction_quiz() {
-    const CHOICE = $('input[name="quiz"]:checked').val();
-    if (typeof CHOICE === 'undefined') {
+    let choice = $('input[name="quiz"]:checked').val();
+    if (typeof choice === 'undefined') {
         $('#quiz-warning').text('Please answer the question. Thank you!');
-    } else if (CHOICE != 'option1') {
+    } else if (choice != 'option1') {
         instr.quizAttemptN['onlyQ'] += 1;
         instr.saveReadingTime();
         $('#instr-text').text('You have given an incorrect answer. Please read the instructions again carefully.');
@@ -296,10 +302,11 @@ function rating() {
 
 function end_task() {
     subj.detectVisibilityEnd();
+    task.save();
     $('#task-box').hide();
     $('#questions-box').show();
-    task.save();
 }
+
 let task_options = {
     titles: TASK_TITLES,
     pracTrialN: RATING_PRACTICE_TRIAL_N,
@@ -330,13 +337,11 @@ $(document).ready(function() {
     subj = new Subject(subj_options);
     subj.id = subj.getID(ID_GET_VARIABLE_NAME);
     subj.saveVisit();
-    if (subj.phone) {
-        halt_experiment('It seems that you are using a touchscreen device or a phone. Please use a laptop or desktop instead.<br /><br />If you believe you have received this message in error, please contact the experimenter at yichiachen@ucla.edu<br /><br />Otherwise, please switch to a laptop or a desktop computer for this experiment.');
-    } else if (subj.validID){
+    if (subj.validID){
         load_img(0, STIM_PATH, ALL_IMG_LIST);
         instr = new Instructions(instr_options);
         instr.start();
     } else {
-        halt_experiment('LINK ID ERROR: Please visit the experiment page again from the link provided on the website you signed up for the experiment. If you believe you have received this message in error, please contact the experimenter at yichiachen@ucla.edu  .');
+        halt_experiment('ID ERROR: Please visit the experiment page again from the link provided on the website you signed up for the experiment. If you believe you have received this message in error, please contact the experimenter at yichiachen@ucla.edu with the message "ID-ERROR" .');
     }
 });
