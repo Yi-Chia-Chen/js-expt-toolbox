@@ -16,7 +16,7 @@ html {
     background: #333;
     color: #ddd;
     font-family: 'Raleway', Sans-serif;
-    font-size: 28px;
+    font-size: 25px;
     line-height: 35px;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -56,9 +56,9 @@ body{
     position: relative;
     margin: 25px auto;
     width: 250px;
-    height: 35px;
+    height: 40px;
     font-size: 22px;
-    line-height: 35px;
+    line-height: 40px;
     text-align: center;
     border-radius: 8px;
     background: #181818;

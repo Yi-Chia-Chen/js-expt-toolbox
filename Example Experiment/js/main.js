@@ -113,7 +113,7 @@ function submit_debriefing_questions() {
     fetch_debriefing_responses(subj, open_ended_names, choice_names);
     let all_responded = show_hide_warnings(subj, open_ended_names, choice_names);
     if (all_responded) {
-        for (let a of open_ended_names) {
+        for (let q of open_ended_names) {
             subj[q] = $('#'+q).val().replace(/(?:\r\n|\r|\n)/g, '<br />');
         }
         subj.quizAttemptN = instr.quizAttemptN['onlyQ'];
@@ -184,7 +184,7 @@ function go_to_completion_page() {
 const INSTRUCTIONS = [
     [false, false, 'Thank you very much!<br /><br />This study will take about 10 minutes. Please read the instructions carefully, and avoid using the refresh or back buttons.'],
     [show_maximize_window, false, 'For this study to work, the webpage will automatically switch to the full-screen view on the next page. Please stay in the full screen mode until the study automatically switches out from it.'],
-    [hide_instr_img, enter_fullscreen, 'In this study, we will show you '+RATING_INSTR_TRIAL_N+' images, one at a time. We are interested in how positive you feel looking at each image.'],
+    [hide_instr_img, enter_fullscreen, 'In this study, we will show you '+INSTR_TRIAL_N+' images, one at a time. We are interested in how positive you feel looking at each image.'],
     [false, false, 'Six options will be available below the images as six buttons. Just click one of the options based on your experience.'],
     [false, false, "The next page is a quick instruction quiz. (It's very simple!)"],
     [false, show_instr_question, ''],
@@ -309,14 +309,14 @@ function end_task() {
 
 let task_options = {
     titles: TASK_TITLES,
-    pracTrialN: RATING_PRACTICE_TRIAL_N,
-    trialN: RATING_TRIAL_N,
+    pracTrialN: PRACTICE_TRIAL_N,
+    trialN: TRIAL_N,
     savingScript: SAVING_SCRIPT,
     dataFile: RATING_FILE,
     stimPath: STIM_PATH,
     savingDir: SAVING_DIR,
-    trialList: RATING_IMG_LIST,
-    pracList: RATING_PRACTICE_LIST,
+    trialList: TRIAL_LIST,
+    pracList: PRACTICE_LIST,
     intertrialInterval: INTERTRIAL_INTERVAL,
     updateFunc: task_update,
     trialFunc: rating,

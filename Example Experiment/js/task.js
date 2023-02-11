@@ -29,7 +29,7 @@ class Task {
         this.trialList = this.trialList.slice();
         this.allData = array_to_formatted_string(this.titles.slice());
         this.complete = false;
-        this.restTrialNum = findRestTrialNum();
+        this.findRestTrialNum();
         this.getSubjectData();
     }
 
