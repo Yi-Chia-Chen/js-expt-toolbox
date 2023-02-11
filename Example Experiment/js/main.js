@@ -20,7 +20,7 @@ const ATTRITION_FILE = 'attrition_' + EXPERIMENT_NAME + '.txt';
 const RATING_FILE = 'rating_' + EXPERIMENT_NAME + '.txt';
 const SUBJ_FILE = 'subj_' + EXPERIMENT_NAME + '.txt';
 const SAVING_DIR = FORMAL ? '/var/www-data-experiments/cvlstudy_data/YCC/example'+EXPERIMENT_NAME+'/formal' : '/var/www-data-experiments/cvlstudy_data/YCC/example'+EXPERIMENT_NAME+'/testing';
-const ID_GET_VARIABLE_NAME = 'id';
+const ID_VARIABLE_NAME = 'id';
 const COMPLETION_URL = 'https://ycc.vision/';
 
 // stimuli
@@ -37,7 +37,7 @@ const TRIAL_N = TRIAL_LIST.length;
 const INSTR_TRIAL_N = PRACTICE_TRIAL_N + TRIAL_N;
 const INTERTRIAL_INTERVAL = 0.5;
 const INSTR_IMG_LIST = ['maximize_window.png'];
-const ALL_IMG_LIST = PRACTICE_LIST.concat(TRIAL_LIST).concat(INSTR_IMG_LIST);
+const ALL_IMG_LIST = PRACTICE_LIST.concat(IMG_LIST).concat(INSTR_IMG_LIST);
 
 // criteria
 const VIEWPORT_MIN_W = 800;
@@ -260,8 +260,8 @@ let instr_options = {
 //    ##    ##     ##  ######  ##    ##
 
 const TASK_TITLES = [
-    'num',
-    'date',
+    'subjNum',
+    'subjStartDate',
     'subjStartTime',
     'trialNum',
     'stimName',
@@ -335,7 +335,7 @@ let task_options = {
 
 $(document).ready(function() {
     subj = new Subject(subj_options);
-    subj.id = subj.getID(ID_GET_VARIABLE_NAME);
+    subj.id = subj.getID(ID_VARIABLE_NAME);
     subj.saveVisit();
     if (subj.validID){
         load_img(0, STIM_PATH, ALL_IMG_LIST);

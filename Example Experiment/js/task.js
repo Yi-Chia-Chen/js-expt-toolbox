@@ -43,8 +43,8 @@ class Task {
     }
 
     getSubjectData() {
-        this.num = this.subj.num;
-        this.date = this.subj.date;
+        this.subjNum = this.subj.num;
+        this.subjStartDate = this.subj.date;
         this.subjStartTime = this.subj.startTime;
     }
 
